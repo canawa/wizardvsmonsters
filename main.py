@@ -2,7 +2,13 @@ from fastapi import FastAPI
 import secrets
 from pydantic import BaseModel
 import statistics
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import FileResponse
+
 app = FastAPI()
+
+
 result=0
 symbols = (
     ['J'] * 100 +    # символы
@@ -19,8 +25,10 @@ symbols = (
     ['🚪'] * 7      
 )
 
-
-
+app.mount("/static", StaticFiles(directory="static", html=True), name="static") # при переходе на главную страничку откроется папка статик
+@app.get('/')
+def read_index():
+    return FileResponse('static/index.html')
 
 
 shutterMultiplier = (
@@ -132,7 +140,7 @@ def gameLogic(bet,result,counter,payout):
         return {'payout':payout, 'counter':counter, 'gameResults': gameResults, 'column1':column1,'column2':column2,'column3':column3,'column4':column4, 'column5':column5,'column6':column6}
         
 
-@app.get('/bonus')
+@app.get('/api/bonus')
 def bonusGame(bet:int,counter:int,gameResults: str):
     multiplier=1
     payout = 0
@@ -169,8 +177,9 @@ def bonusGame(bet:int,counter:int,gameResults: str):
 
 
 bonusCount =0
-@app.get('/')
+@app.get('/api/spin')
 def spinTest():
+    
     bigWinCount=0
     bet = 100
     hitFreq=0
@@ -216,7 +225,7 @@ def spinTest():
 
 
 
-@app.get('/stats')
+@app.get('/api/stats')
 def stats():
     rtp=[]
     bonus=[]
@@ -250,8 +259,8 @@ def stats():
 
 class Balance(BaseModel):
     balance: int
-
-@app.post('/')
-def create_balance(newBalance = Balance):
-    return {'successs':True}
-
+#
+# @app.post('/')
+# def create_balance(newBalance = Balance):
+#     return {'successs':True}
+#
