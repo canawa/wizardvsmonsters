@@ -43,48 +43,48 @@ shutterMultiplier = (
 )
 def gameLogic(bet,result,counter,payout):
         gameResults = ''
-        column1=result[:5]
-        column2=result[5:10]
-        column3=result[10:15]
-        column4=result[15:20]
-        column5=result[20:25]
-        column6=result[25:]
-        if column1.count('🔥') > 1:
-            z = column1.index('🔥')
-            column1[z] = column1[z].replace('🔥', 'Q', 1)
-        if column2.count('🔥') > 1:
-            z = column2.index('🔥')
-            column2[z] = column2[z].replace('🔥', 'Q', 1)
-        if column3.count('🔥') > 1:
-            z = column3.index('🔥')
-            column3[z] = column3[z].replace('🔥', 'Q', 1)
-        if column4.count('🔥') > 1:
-            z = column4.index('🔥')
-            column4[z] = column4[z].replace('🔥', 'Q', 1)
-        if column5.count('🔥') > 1:
-            z = column5.index('🔥')
-            column5[z] = column5[z].replace('🔥', 'Q', 1)
-        if column6.count('🔥') > 1:
-            z = column6.index('🔥')
-            column6[z] = column6[z].replace('🔥', 'Q', 1)
-        if column1.count('⚡')>1:
-            z = column1.index('⚡')
-            column1[z]=column1[z].replace('⚡','J',1)
-        if column2.count('⚡')>1:
-            z = column2.index('⚡')
-            column2[z]=column2[z].replace('⚡','J',1)
-        if column3.count('⚡')>1:
-            z = column3.index('⚡')
-            column3[z]=column3[z].replace('⚡','J',1)
-        if column4.count('⚡')>1:
-            z = column4.index('⚡')
-            column4[z]=column4[z].replace('⚡','J',1)
-        if column5.count('⚡')>1:
-            z = column5.index('⚡')
-            column5[z]=column5[z].replace('⚡','J',1)
-        if column6.count('⚡')>1:
-            z = column6.index('⚡')
-            column6[z]=column6[z].replace('⚡','J',1)
+        row1=result[:5]
+        row2=result[5:10]
+        row3=result[10:15]
+        row4=result[15:20]
+        row5=result[20:25]
+        row6=result[25:]
+        if row1.count('🔥') > 1:
+            z = row1.index('🔥')
+            row1[z] = row1[z].replace('🔥', 'Q', 1)
+        if row2.count('🔥') > 1:
+            z = row2.index('🔥')
+            row2[z] = row2[z].replace('🔥', 'Q', 1)
+        if 3.count('🔥') > 1:
+            z = row3.index('🔥')
+            row3[z] = row3[z].replace('🔥', 'Q', 1)
+        if 4.count('🔥') > 1:
+            z = row4.index('🔥')
+            row4[z] = row4[z].replace('🔥', 'Q', 1)
+        if row5.count('🔥') > 1:
+            z = row5.index('🔥')
+            row5[z] = row5[z].replace('🔥', 'Q', 1)
+        if row6.count('🔥') > 1:
+            z = row6.index('🔥')
+            row6[z] = row6[z].replace('🔥', 'Q', 1)
+        if row1.count('⚡')>1:
+            z = row1.index('⚡')
+            row1[z]=row1[z].replace('⚡','J',1)
+        if row2.count('⚡')>1:
+            z = row2.index('⚡')
+            row2[z]=row2[z].replace('⚡','J',1)
+        if row3.count('⚡')>1:
+            z = row3.index('⚡')
+            row3[z]=row3[z].replace('⚡','J',1)
+        if row4.count('⚡')>1:
+            z = row4.index('⚡')
+            row4[z]=row4[z].replace('⚡','J',1)
+        if row5.count('⚡')>1:
+            z = row5.index('⚡')
+            row5[z]=row5[z].replace('⚡','J',1)
+        if row6.count('⚡')>1:
+            z = row6.index('⚡')
+            row6[z]=row6[z].replace('⚡','J',1)
             
 
         if result.count('🔥')>=1:
@@ -136,7 +136,7 @@ def gameLogic(bet,result,counter,payout):
             gameResults = gameResults + 'Сыграли 🍓' + str(payout)
         
 
-        return {'payout':payout, 'counter':counter, 'gameResults': gameResults, 'column1':column1,'column2':column2,'column3':column3,'column4':column4, 'column5':column5,'column6':column6}
+        return {'payout':payout, 'counter':counter, 'gameResults': gameResults, 'row1':row1,'row2':row2,'row3':row3,'row4':row4, 'row5':row5,'row6':row6}
         
 
 @app.get('/api/bonus')
@@ -194,12 +194,12 @@ def spinTest():
     payout=game['payout']
     counter=game['counter']
     gameResults = game['gameResults']
-    column1=game['column1']
-    column2=game['column2']
-    column3=game['column3']
-    column4=game['column4']
-    column5=game['column5']
-    column6=game['column6']
+    row1=game['row1']
+    row2=game['row2']
+    row3=game['row3']
+    row4=game['row4']
+    row5=game['row5']
+    row6=game['row6']
     if result.count('🚪')>=1:
         for i in range(result.count('🚪')):
             multiplier = multiplier + secrets.choice(shutterMultiplier)
@@ -217,7 +217,7 @@ def spinTest():
     if len(gameResults) > 3:
             hitFreq = hitFreq+1
     
-    return {'payout':payout,'сколько символов сыграло': counter, 'bigWinCount': bigWinCount, 'hitFrequency':hitFreq, 'bonusCount': bonusCount, 'symbolsPayout': gameResults, 'multiplier':multiplier, 'column1': column1,'column2':column2,'column3':column3,'column4':column4,'column5':column5,'column6':column6}
+    return {'payout':payout,'сколько символов сыграло': counter, 'bigWinCount': bigWinCount, 'hitFrequency':hitFreq, 'bonusCount': bonusCount, 'symbolsPayout': gameResults, 'multiplier':multiplier, 'row1': row1,'row2':row2,'row3':row3,'row4':row4,'row5':row5,'row6':row6}
     
 
 
