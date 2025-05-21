@@ -55,10 +55,10 @@ def gameLogic(bet,result,counter,payout):
         if row2.count('🔥') > 1:
             z = row2.index('🔥')
             row2[z] = row2[z].replace('🔥', 'Q', 1)
-        if 3.count('🔥') > 1:
+        if row3.count('🔥') > 1:
             z = row3.index('🔥')
             row3[z] = row3[z].replace('🔥', 'Q', 1)
-        if 4.count('🔥') > 1:
+        if row4.count('🔥') > 1:
             z = row4.index('🔥')
             row4[z] = row4[z].replace('🔥', 'Q', 1)
         if row5.count('🔥') > 1:
