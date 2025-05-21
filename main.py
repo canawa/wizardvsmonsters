@@ -41,7 +41,6 @@ shutterMultiplier = (
     [75] * 1
       
 )
-
 def gameLogic(bet,result,counter,payout):
         gameResults = ''
         column1=result[:5]
@@ -218,7 +217,7 @@ def spinTest():
     if len(gameResults) > 3:
             hitFreq = hitFreq+1
     
-    return {'payout':payout,'сколько символов сыграло': counter, 'bigWinCount': bigWinCount, 'hitFrequency':hitFreq, 'bonusCount': bonusCount, 'что сыграло:': gameResults, 'multiplier':multiplier, 'column1': column1,'column2':column2,'column3':column3,'column4':column4,'column5':column5,'column6':column6}
+    return {'payout':payout,'сколько символов сыграло': counter, 'bigWinCount': bigWinCount, 'hitFrequency':hitFreq, 'bonusCount': bonusCount, 'symbolsPayout': gameResults, 'multiplier':multiplier, 'column1': column1,'column2':column2,'column3':column3,'column4':column4,'column5':column5,'column6':column6}
     
 
 
