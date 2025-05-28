@@ -148,13 +148,16 @@ window.addEventListener('DOMContentLoaded', async () => {
         background.height = app.screen.height * 1.2 // если с покофона
         background.scale.x = background.scale.y
     }
+const graphics = new PIXI.Graphics()
 
-
-
-
-function spinAnimation(thisSprite,targetY) {
+graphics.beginFill(0xff0000)
+graphics.drawRect(app.screen.width/3.5,app.screen.height/12.3,app.screen.width/1.8,reels.height /1.22) // x,y,width,height
+graphics.endFill()
+app.stage.addChild(graphics)
+gameConainter.mask = graphics
+async function spinAnimation(thisSprite,targetY) {
     const fallAnimation = (time)=>{
-        const speed=15
+        const speed=20
         
         if (thisSprite.y < targetY) {
             thisSprite.y = thisSprite.y + speed*time.deltaTime
@@ -173,15 +176,16 @@ function spinAnimation(thisSprite,targetY) {
 
 
 
-
-
+let spinMade=false
     const button = document.getElementById('spinButton')
     button.addEventListener('click', async ()=> {
+
+
         const symbolsArray = ['J','Q','K','A','🍓', '🍌','🍍','🔥','🫐','🍐','⚡','🚪']
         let response = await fetch('api/spin')
         let data = await response.json()
-
         gameConainter.removeChildren()
+
         for (let symbol of symbolsArray) {
             if (data.row1[0] == symbol) {
                 sprite0 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -189,18 +193,19 @@ function spinAnimation(thisSprite,targetY) {
                 sprite0.width = reels.width / 8
                 sprite0.scale.y = sprite0.scale.x
                 sprite0.x = app.screen.width / 3.3 // 2.95
-                sprite0.y = app.screen.height / 10 - 1*sprite0.height
+                sprite0.y = app.screen.height / 10 - 5*sprite0.height
                 gameConainter.addChild(sprite0)
-                spinAnimation(sprite0,app.screen.height / 10)
+                setTimeout(()=>{spinAnimation(sprite0,app.screen.height / 10)},300)
             }
             if (data.row1[1] == symbol) {
                 sprite1 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite1.width = reels.width / 8
                 sprite1.scale.y = sprite1.scale.x
-                sprite1.x = app.screen.width / 3.3 + sprite0.width // 2.95
-                sprite1.y = app.screen.height / 10
+                sprite1.x = app.screen.width / 3.3 + sprite0.width
+                sprite1.y = app.screen.height / 10  - 5*sprite0.height
                 gameConainter.addChild(sprite1)
+                setTimeout(()=>{spinAnimation(sprite1,app.screen.height / 10)}, 600)
             }
             if (data.row1[2] == symbol) {
                 sprite2 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -208,8 +213,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite2.width = reels.width / 8
                 sprite2.scale.y = sprite2.scale.x
                 sprite2.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
-                sprite2.y = app.screen.height / 10
+                sprite2.y = app.screen.height / 10 - 5*sprite0.height
                 gameConainter.addChild(sprite2)
+                setTimeout(()=>{spinAnimation(sprite2,app.screen.height / 10)}, 900)
             }
             if (data.row1[3] == symbol) {
                 sprite3 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -217,8 +223,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite3.width = reels.width / 8
                 sprite3.scale.y = sprite3.scale.x
                 sprite3.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
-                sprite3.y = app.screen.height / 10
+                sprite3.y = app.screen.height / 10 - 5*sprite0.height
                 gameConainter.addChild(sprite3)
+                setTimeout(()=>{spinAnimation(sprite3,app.screen.height / 10)}, 1200)
             }
             if (data.row1[4] == symbol) {
                 sprite4 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -226,8 +233,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite4.width = reels.width / 8
                 sprite4.scale.y = sprite4.scale.x
                 sprite4.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
-                sprite4.y = app.screen.height / 10
+                sprite4.y = app.screen.height / 10 - 5*sprite0.height
                 gameConainter.addChild(sprite4)
+                setTimeout(()=>{spinAnimation(sprite4,app.screen.height / 10)}, 1500)
             }
             if (data.row2[0] == symbol) {
                 sprite5 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -235,8 +243,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite5.width = reels.width / 8
                 sprite5.scale.y = sprite5.scale.x
                 sprite5.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
-                sprite5.y = app.screen.height / 10
+                sprite5.y = app.screen.height / 10 - 5*sprite0.height
                 gameConainter.addChild(sprite5)
+                setTimeout(()=>{spinAnimation(sprite5,app.screen.height / 10)}, 1800)
             }
             if (data.row2[1] == symbol) {
                 sprite6 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -244,9 +253,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite6.width = reels.width / 8
                 sprite6.scale.y = sprite6.scale.x
                 sprite6.x = app.screen.width / 3.3 + 0*sprite0.width // 2.95
-                sprite6.y = app.screen.height / 10 
+                sprite6.y = app.screen.height / 10 - 4*sprite0.height
                 gameConainter.addChild(sprite6)
-                spinAnimation(sprite6, app.screen.height / 10 + 1*sprite0.height)
+                setTimeout(()=>{spinAnimation(sprite6, app.screen.height / 10 + 1*sprite0.height)},300)
             }
             if (data.row2[2] == symbol) {
                 sprite7 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -254,8 +263,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite7.width = reels.width / 8
                 sprite7.scale.y = sprite7.scale.x
                 sprite7.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
-                sprite7.y = app.screen.height / 10 + 1*sprite0.height
+                sprite7.y = app.screen.height / 10 -4*sprite0.height
                 gameConainter.addChild(sprite7)
+                setTimeout(()=>{spinAnimation(sprite7, app.screen.height / 10 + 1*sprite0.height)},600)
             }
             if (data.row2[3] == symbol) {
                 sprite8 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -263,8 +273,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite8.width = reels.width / 8
                 sprite8.scale.y = sprite8.scale.x
                 sprite8.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
-                sprite8.y = app.screen.height / 10 + 1*sprite0.height
+                sprite8.y = app.screen.height / 10 -4*sprite0.height
                 gameConainter.addChild(sprite8)
+                setTimeout(()=>{spinAnimation(sprite8, app.screen.height / 10 + 1*sprite0.height)},900)
             }
             if (data.row2[4] == symbol) {
                 sprite9 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -272,8 +283,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite9.width = reels.width / 8
                 sprite9.scale.y = sprite9.scale.x
                 sprite9.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
-                sprite9.y = app.screen.height / 10 + 1*sprite0.height
+                sprite9.y = app.screen.height / 10 - 4*sprite0.height
                 gameConainter.addChild(sprite9)
+                setTimeout(()=>{spinAnimation(sprite9, app.screen.height / 10 + 1*sprite0.height)},1200)
             }
             if (data.row3[0] == symbol) {
                 sprite10 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -281,8 +293,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite10.width = reels.width / 8
                 sprite10.scale.y = sprite10.scale.x
                 sprite10.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
-                sprite10.y = app.screen.height / 10 + 1*sprite0.height
+                sprite10.y = app.screen.height / 10 - 4*sprite0.height
                 gameConainter.addChild(sprite10)
+                setTimeout(()=>{spinAnimation(sprite10, app.screen.height / 10 + 1*sprite0.height)},1500)
             }
             if (data.row3[1] == symbol) {
                 sprite11 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -290,8 +303,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite11.width = reels.width / 8
                 sprite11.scale.y = sprite11.scale.x
                 sprite11.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
-                sprite11.y = app.screen.height / 10 + 1*sprite0.height
+                sprite11.y = app.screen.height / 10 + -4*sprite0.height
                 gameConainter.addChild(sprite11)
+                setTimeout(()=>{spinAnimation(sprite11, app.screen.height / 10 + 1*sprite0.height)},1800)
             }
             if (data.row3[2] == symbol) {
                 sprite12 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -299,8 +313,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite12.width = reels.width / 8
                 sprite12.scale.y = sprite12.scale.x
                 sprite12.x = app.screen.width / 3.3 + 0*sprite0.width // 2.95
-                sprite12.y = app.screen.height / 10 + 2*sprite0.height
+                sprite12.y = app.screen.height / 10 -3*sprite0.height
                 gameConainter.addChild(sprite12)
+                setTimeout(()=>{spinAnimation(sprite12, app.screen.height / 10 + 2*sprite0.height)},300)
             }
             if (data.row3[3] == symbol) {
                 sprite13 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -308,8 +323,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite13.width = reels.width / 8
                 sprite13.scale.y = sprite13.scale.x
                 sprite13.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
-                sprite13.y = app.screen.height / 10 + 2*sprite0.height
+                sprite13.y = app.screen.height / 10 -3*sprite0.height
                 gameConainter.addChild(sprite13)
+                setTimeout(()=>{spinAnimation(sprite13, app.screen.height / 10 + 2*sprite0.height)},600)
             }
             if (data.row3[4] == symbol) {
                 sprite14 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -317,8 +333,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite14.width = reels.width / 8
                 sprite14.scale.y = sprite14.scale.x
                 sprite14.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
-                sprite14.y = app.screen.height / 10 + 2*sprite0.height
+                sprite14.y = app.screen.height / 10 -3*sprite0.height
                 gameConainter.addChild(sprite14)
+                setTimeout(()=>{spinAnimation(sprite14, app.screen.height / 10 + 2*sprite0.height)},900)
             }
             if (data.row4[0] == symbol) {
                 sprite15 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -326,8 +343,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite15.width = reels.width / 8
                 sprite15.scale.y = sprite15.scale.x
                 sprite15.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
-                sprite15.y = app.screen.height / 10 + 2*sprite0.height
+                sprite15.y = app.screen.height / 10 -3*sprite0.height
                 gameConainter.addChild(sprite15)
+                setTimeout(()=>{spinAnimation(sprite15, app.screen.height / 10 + 2*sprite0.height)},1200)
             }
             if (data.row4[1] == symbol) {
                 sprite16 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -335,8 +353,10 @@ function spinAnimation(thisSprite,targetY) {
                 sprite16.width = reels.width / 8
                 sprite16.scale.y = sprite16.scale.x
                 sprite16.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
-                sprite16.y = app.screen.height / 10 + 2*sprite0.height
+                sprite16.y = app.screen.height / 10-3*sprite0.height
                 gameConainter.addChild(sprite16)
+                setTimeout(()=>{spinAnimation(sprite16, app.screen.height / 10 + 2*sprite0.height)},1500)
+
             }
             if (data.row4[2] == symbol) {
                 sprite17 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -344,8 +364,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite17.width = reels.width / 8
                 sprite17.scale.y = sprite17.scale.x
                 sprite17.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
-                sprite17.y = app.screen.height / 10 + 2*sprite0.height
+                sprite17.y = app.screen.height / 10 -3*sprite0.height
                 gameConainter.addChild(sprite17)
+                setTimeout(()=>{spinAnimation(sprite17, app.screen.height / 10 + 2*sprite0.height)},1800)
             }
             if (data.row4[3] == symbol) {
                 sprite18 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -353,8 +374,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite18.width = reels.width / 8
                 sprite18.scale.y = sprite18.scale.x
                 sprite18.x = app.screen.width / 3.3 + 0*sprite0.width // 2.95
-                sprite18.y = app.screen.height / 10 + 3*sprite0.height
+                sprite18.y = app.screen.height / 10 - 2*sprite0.height
                 gameConainter.addChild(sprite18)
+                setTimeout(()=>{spinAnimation(sprite18, app.screen.height / 10 + 3*sprite0.height)},300)
             }
             if (data.row4[4] == symbol) {
                 sprite19 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -362,17 +384,19 @@ function spinAnimation(thisSprite,targetY) {
                 sprite19.width = reels.width / 8
                 sprite19.scale.y = sprite19.scale.x
                 sprite19.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
-                sprite19.y = app.screen.height / 10 + 3*sprite0.height
+                sprite19.y = app.screen.height / 10 - 2*sprite0.height
                 gameConainter.addChild(sprite19)
+                setTimeout(()=>{spinAnimation(sprite19, app.screen.height / 10 + 3*sprite0.height)},600)
             }
             if (data.row5[0] == symbol) {
                 sprite20 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
-                sprite20.width = reels.width / 8
+                sprite20.width  = reels.width / 8
                 sprite20.scale.y = sprite20.scale.x
                 sprite20.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
-                sprite20.y = app.screen.height / 10 + 3*sprite0.height
+                sprite20.y = app.screen.height / 10 - 2*sprite0.height
                 gameConainter.addChild(sprite20)
+                setTimeout(()=>{spinAnimation(sprite20, app.screen.height / 10 + 3*sprite0.height)},900)
             }
             if (data.row5[1] == symbol) {
                 sprite21 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -380,8 +404,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite21.width = reels.width / 8
                 sprite21.scale.y = sprite21.scale.x
                 sprite21.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
-                sprite21.y = app.screen.height / 10 + 3*sprite0.height
+                sprite21.y = app.screen.height / 10 - 2*sprite0.height
                 gameConainter.addChild(sprite21)
+                setTimeout(()=>{spinAnimation(sprite21, app.screen.height / 10 + 3*sprite0.height)},1200)
             }
             if (data.row5[2] == symbol) {
                 sprite22 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -389,8 +414,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite22.width = reels.width / 8
                 sprite22.scale.y = sprite22.scale.x
                 sprite22.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
-                sprite22.y = app.screen.height / 10 + 3*sprite0.height
+                sprite22.y = app.screen.height / 10 - 2*sprite0.height
                 gameConainter.addChild(sprite22)
+                setTimeout(()=>{spinAnimation(sprite22, app.screen.height / 10 + 3*sprite0.height)},1500)
             }
             if (data.row5[3] == symbol) {
                 sprite23 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -398,8 +424,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite23.width = reels.width / 8
                 sprite23.scale.y = sprite23.scale.x
                 sprite23.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
-                sprite23.y = app.screen.height / 10 + 3*sprite0.height
+                sprite23.y = app.screen.height / 10 - 2*sprite0.height
                 gameConainter.addChild(sprite23)
+                setTimeout(()=>{spinAnimation(sprite23, app.screen.height / 10 + 3*sprite0.height)},1800)
             }
             if (data.row5[4] == symbol) {
                 sprite24 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -407,8 +434,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite24.width = reels.width / 8
                 sprite24.scale.y = sprite24.scale.x
                 sprite24.x = app.screen.width / 3.3 + 0*sprite0.width // 2.95
-                sprite24.y = app.screen.height / 10 + 4*sprite0.height
+                sprite24.y = app.screen.height / 10 -1*sprite0.height
                 gameConainter.addChild(sprite24)
+                setTimeout(()=>{spinAnimation(sprite24, app.screen.height / 10 + 4*sprite0.height)},300)
             }
             if (data.row6[0] == symbol) {
                 sprite25 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -416,8 +444,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite25.width = reels.width / 8
                 sprite25.scale.y = sprite25.scale.x
                 sprite25.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
-                sprite25.y = app.screen.height / 10 + 4*sprite0.height
+                sprite25.y = app.screen.height / 10 -1*sprite0.height
                 gameConainter.addChild(sprite25)
+                setTimeout(()=>{spinAnimation(sprite25, app.screen.height / 10 + 4*sprite0.height)},600)
             }
             if (data.row6[1] == symbol) {
                 sprite26 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -425,8 +454,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite26.width = reels.width / 8
                 sprite26.scale.y = sprite26.scale.x
                 sprite26.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
-                sprite26.y = app.screen.height / 10 + 4*sprite0.height
+                sprite26.y = app.screen.height / 10 -1*sprite0.height
                 gameConainter.addChild(sprite26)
+                setTimeout(()=>{spinAnimation(sprite26, app.screen.height / 10 + 4*sprite0.height)},900)
             }
             if (data.row6[2] == symbol) {
                 sprite27 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -434,8 +464,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite27.width = reels.width / 8
                 sprite27.scale.y = sprite27.scale.x
                 sprite27.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
-                sprite27.y = app.screen.height / 10 + 4*sprite0.height
+                sprite27.y = app.screen.height / 10 -1*sprite0.height
                 gameConainter.addChild(sprite27)
+                setTimeout(()=>{spinAnimation(sprite27, app.screen.height / 10 + 4*sprite0.height)},1200)
             }
             if (data.row6[3] == symbol) {
                 sprite28 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -443,8 +474,9 @@ function spinAnimation(thisSprite,targetY) {
                 sprite28.width = reels.width / 8
                 sprite28.scale.y = sprite28.scale.x
                 sprite28.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
-                sprite28.y = app.screen.height / 10 + 4*sprite0.height
+                sprite28.y = app.screen.height / 10 -1*sprite0.height
                 gameConainter.addChild(sprite28)
+                setTimeout(()=>{spinAnimation(sprite28, app.screen.height / 10 + 4*sprite0.height)},1500)
             }
             if (data.row6[4] == symbol) {
                 sprite29 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -452,9 +484,12 @@ function spinAnimation(thisSprite,targetY) {
                 sprite29.width = reels.width / 8
                 sprite29.scale.y = sprite29.scale.x
                 sprite29.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
-                sprite29.y = app.screen.height / 10 + 4*sprite0.height
+                sprite29.y = app.screen.height / 10 -1*sprite0.height
                 gameConainter.addChild(sprite29)
+                setTimeout(()=>{spinAnimation(sprite29, app.screen.height / 10 + 4*sprite0.height)},1800)
             }
+            spinMade=true
+
         }
 
         const game = document.getElementById('game')
