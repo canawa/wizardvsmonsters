@@ -152,7 +152,23 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 
 
-
+function spinAnimation(thisSprite,targetY) {
+    const fallAnimation = (time)=>{
+        const speed=15
+        
+        if (thisSprite.y < targetY) {
+            thisSprite.y = thisSprite.y + speed*time.deltaTime
+        }
+        else {
+            thisSprite.y = targetY
+        }
+        
+        
+        
+    }
+    
+    app.ticker.add(fallAnimation)
+    }
 
 
 
@@ -173,8 +189,9 @@ window.addEventListener('DOMContentLoaded', async () => {
                 sprite0.width = reels.width / 8
                 sprite0.scale.y = sprite0.scale.x
                 sprite0.x = app.screen.width / 3.3 // 2.95
-                sprite0.y = app.screen.height / 10
+                sprite0.y = app.screen.height / 10 - 1*sprite0.height
                 gameConainter.addChild(sprite0)
+                spinAnimation(sprite0,app.screen.height / 10)
             }
             if (data.row1[1] == symbol) {
                 sprite1 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -227,8 +244,9 @@ window.addEventListener('DOMContentLoaded', async () => {
                 sprite6.width = reels.width / 8
                 sprite6.scale.y = sprite6.scale.x
                 sprite6.x = app.screen.width / 3.3 + 0*sprite0.width // 2.95
-                sprite6.y = app.screen.height / 10 + 1*sprite0.height
+                sprite6.y = app.screen.height / 10 
                 gameConainter.addChild(sprite6)
+                spinAnimation(sprite6, app.screen.height / 10 + 1*sprite0.height)
             }
             if (data.row2[2] == symbol) {
                 sprite7 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -257,7 +275,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 sprite9.y = app.screen.height / 10 + 1*sprite0.height
                 gameConainter.addChild(sprite9)
             }
-            if (data.row3[4] == symbol) {
+            if (data.row3[0] == symbol) {
                 sprite10 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite10.width = reels.width / 8
@@ -339,103 +357,103 @@ window.addEventListener('DOMContentLoaded', async () => {
                 gameConainter.addChild(sprite18)
             }
             if (data.row4[4] == symbol) {
-                sprite18 = new PIXI.Sprite(PIXI.Assets.get(symbol))
-
-                sprite18.width = reels.width / 8
-                sprite18.scale.y = sprite18.scale.x
-                sprite18.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
-                sprite18.y = app.screen.height / 10 + 3*sprite0.height
-                gameConainter.addChild(sprite18)
-            }
-            if (data.row5[0] == symbol) {
                 sprite19 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite19.width = reels.width / 8
                 sprite19.scale.y = sprite19.scale.x
-                sprite19.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
+                sprite19.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
                 sprite19.y = app.screen.height / 10 + 3*sprite0.height
                 gameConainter.addChild(sprite19)
             }
-            if (data.row5[1] == symbol) {
+            if (data.row5[0] == symbol) {
                 sprite20 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite20.width = reels.width / 8
                 sprite20.scale.y = sprite20.scale.x
-                sprite20.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
+                sprite20.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
                 sprite20.y = app.screen.height / 10 + 3*sprite0.height
                 gameConainter.addChild(sprite20)
             }
-            if (data.row5[2] == symbol) {
+            if (data.row5[1] == symbol) {
                 sprite21 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite21.width = reels.width / 8
                 sprite21.scale.y = sprite21.scale.x
-                sprite21.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
+                sprite21.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
                 sprite21.y = app.screen.height / 10 + 3*sprite0.height
                 gameConainter.addChild(sprite21)
             }
-            if (data.row5[3] == symbol) {
+            if (data.row5[2] == symbol) {
                 sprite22 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite22.width = reels.width / 8
                 sprite22.scale.y = sprite22.scale.x
-                sprite22.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
+                sprite22.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
                 sprite22.y = app.screen.height / 10 + 3*sprite0.height
                 gameConainter.addChild(sprite22)
             }
-            if (data.row5[4] == symbol) {
+            if (data.row5[3] == symbol) {
                 sprite23 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite23.width = reels.width / 8
                 sprite23.scale.y = sprite23.scale.x
-                sprite23.x = app.screen.width / 3.3 + 0*sprite0.width // 2.95
-                sprite23.y = app.screen.height / 10 + 4*sprite0.height
+                sprite23.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
+                sprite23.y = app.screen.height / 10 + 3*sprite0.height
                 gameConainter.addChild(sprite23)
             }
-            if (data.row6[0] == symbol) {
+            if (data.row5[4] == symbol) {
                 sprite24 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite24.width = reels.width / 8
                 sprite24.scale.y = sprite24.scale.x
-                sprite24.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
+                sprite24.x = app.screen.width / 3.3 + 0*sprite0.width // 2.95
                 sprite24.y = app.screen.height / 10 + 4*sprite0.height
                 gameConainter.addChild(sprite24)
             }
-            if (data.row6[1] == symbol) {
+            if (data.row6[0] == symbol) {
                 sprite25 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite25.width = reels.width / 8
                 sprite25.scale.y = sprite25.scale.x
-                sprite25.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
+                sprite25.x = app.screen.width / 3.3 + 1*sprite0.width // 2.95
                 sprite25.y = app.screen.height / 10 + 4*sprite0.height
                 gameConainter.addChild(sprite25)
             }
-            if (data.row6[2] == symbol) {
+            if (data.row6[1] == symbol) {
                 sprite26 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite26.width = reels.width / 8
                 sprite26.scale.y = sprite26.scale.x
-                sprite26.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
+                sprite26.x = app.screen.width / 3.3 + 2*sprite0.width // 2.95
                 sprite26.y = app.screen.height / 10 + 4*sprite0.height
                 gameConainter.addChild(sprite26)
             }
-            if (data.row6[3] == symbol) {
+            if (data.row6[2] == symbol) {
                 sprite27 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite27.width = reels.width / 8
                 sprite27.scale.y = sprite27.scale.x
-                sprite27.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
+                sprite27.x = app.screen.width / 3.3 + 3*sprite0.width // 2.95
                 sprite27.y = app.screen.height / 10 + 4*sprite0.height
                 gameConainter.addChild(sprite27)
             }
-            if (data.row6[4] == symbol) {
+            if (data.row6[3] == symbol) {
                 sprite28 = new PIXI.Sprite(PIXI.Assets.get(symbol))
 
                 sprite28.width = reels.width / 8
                 sprite28.scale.y = sprite28.scale.x
-                sprite28.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
+                sprite28.x = app.screen.width / 3.3 + 4*sprite0.width // 2.95
                 sprite28.y = app.screen.height / 10 + 4*sprite0.height
                 gameConainter.addChild(sprite28)
+            }
+            if (data.row6[4] == symbol) {
+                sprite29 = new PIXI.Sprite(PIXI.Assets.get(symbol))
+
+                sprite29.width = reels.width / 8
+                sprite29.scale.y = sprite29.scale.x
+                sprite29.x = app.screen.width / 3.3 + 5*sprite0.width // 2.95
+                sprite29.y = app.screen.height / 10 + 4*sprite0.height
+                gameConainter.addChild(sprite29)
             }
         }
 
