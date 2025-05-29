@@ -1,2 +1,3 @@
 node_modules/
 static/pixi.mjs
+/static/pixi-sound.mjs

@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@pixi/sound": "^6.0.1",
     "gsap": "^3.13.0",
+    "howler": "^2.2.4",
     "pixi.js": "^8.9.2"
   }
 }

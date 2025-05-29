@@ -1,16 +1,26 @@
 import * as PIXI from '/static/pixi.mjs'
 
-let music = new Howl ({
+const music = new Howl ({
    src : ['/static/sounds/music.wav'],
    loop : true,
-   volume : 0.1,
+   volume : 0.1
 })
-let spinSound = new Howl ({
+const spinSound = new Howl ({
     src : ['/static/sounds/spinSound.mp3'],
     volume : 0.4
 })
-
-
+const button_click = new Howl ({
+    src : ['/static/sounds/button_click.mp3'],
+    volume : 1
+})
+const swooshSpin = new Howl ({
+    src : ['/static/sounds/swoosh.mp3'], // легкое дуновение ветра при спине
+    volume : 0.4
+})
+const bonusSymbolDropped = new Howl ({
+    src : ['/static/sounds/bonusSymbolSound.mp3'],
+    volume : 2
+})
 let sprite0
 let sprite1
 let sprite2
@@ -513,7 +523,13 @@ async function spin() {
         let response = await fetch('api/spin')
         let data = await response.json()
         gameConainter.removeChildren()
-
+        button_click.play()
+        setTimeout(()=>{swooshSpin.play()},400)
+        setTimeout(()=>{swooshSpin.play()},800)
+        setTimeout(()=>{swooshSpin.play()},1200)
+        setTimeout(()=>{swooshSpin.play()},1600)
+        setTimeout(()=>{swooshSpin.play()},2000)
+        
         for (let symbol of symbolsArray) {
             if (data.row1[0] == symbol) {
                 sprite0 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -523,6 +539,9 @@ async function spin() {
                 sprite0.x = app.screen.width / 3.3 // 2.95
                 sprite0.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite0)
+                if (data.row1[0] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                }
                 setTimeout(()=>{spinAnimation(sprite0,app.screen.height / 10)},300)
             }
             if (data.row1[1] == symbol) {
@@ -533,6 +552,9 @@ async function spin() {
                 sprite1.x = app.screen.width / 3.3 + spriteWidth
                 sprite1.y = app.screen.height / 10  - 5*spriteHeight
                 gameConainter.addChild(sprite1)
+                if (data.row1[1] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                }
                 setTimeout(()=>{spinAnimation(sprite1,app.screen.height / 10)}, 600)
             }
             if (data.row1[2] == symbol) {
@@ -543,6 +565,9 @@ async function spin() {
                 sprite2.x = app.screen.width / 3.3 + 2*spriteWidth// 2.95
                 sprite2.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite2)
+                if (data.row1[2] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                }
                 setTimeout(()=>{spinAnimation(sprite2,app.screen.height / 10)}, 900)
             }
             if (data.row1[3] == symbol) {
@@ -553,6 +578,9 @@ async function spin() {
                 sprite3.x = app.screen.width / 3.3 + 3*spriteWidth // 2.95
                 sprite3.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite3)
+                if (data.row1[3] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                }
                 setTimeout(()=>{spinAnimation(sprite3,app.screen.height / 10)}, 1200)
             }
             if (data.row1[4] == symbol) {
@@ -563,6 +591,9 @@ async function spin() {
                 sprite4.x = app.screen.width / 3.3 + 4*spriteWidth // 2.95
                 sprite4.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite4)
+                if (data.row1[4] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                }
                 setTimeout(()=>{spinAnimation(sprite4,app.screen.height / 10)}, 1500)
             }
             if (data.row2[0] == symbol) {
@@ -573,6 +604,9 @@ async function spin() {
                 sprite5.x = app.screen.width / 3.3 + 5*spriteWidth // 2.95
                 sprite5.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite5)
+                if (data.row2[0] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},2100)
+                }
                 setTimeout(()=>{spinAnimation(sprite5,app.screen.height / 10)}, 1800)
             }
             if (data.row2[1] == symbol) {
@@ -583,6 +617,9 @@ async function spin() {
                 sprite6.x = app.screen.width / 3.3 + 0*spriteWidth// 2.95
                 sprite6.y = app.screen.height / 10 - 4*spriteHeight
                 gameConainter.addChild(sprite6)
+                if (data.row2[1] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                }
                 setTimeout(()=>{spinAnimation(sprite6, app.screen.height / 10 + 1*sprite0.height)},300)
             }
             if (data.row2[2] == symbol) {
@@ -593,6 +630,9 @@ async function spin() {
                 sprite7.x = app.screen.width / 3.3 + 1*spriteWidth // 2.95
                 sprite7.y = app.screen.height / 10 -4*spriteHeight
                 gameConainter.addChild(sprite7)
+                if (data.row2[2] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                }
                 setTimeout(()=>{spinAnimation(sprite7, app.screen.height / 10 + 1*sprite0.height)},600)
             }
             if (data.row2[3] == symbol) {
@@ -603,6 +643,9 @@ async function spin() {
                 sprite8.x = app.screen.width / 3.3 + 2*spriteWidth // 2.95
                 sprite8.y = app.screen.height / 10 -4*spriteHeight
                 gameConainter.addChild(sprite8)
+                if (data.row2[3] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                }
                 setTimeout(()=>{spinAnimation(sprite8, app.screen.height / 10 + 1*sprite0.height)},900)
             }
             if (data.row2[4] == symbol) {
@@ -613,6 +656,9 @@ async function spin() {
                 sprite9.x = app.screen.width / 3.3 + 3*spriteWidth// 2.95
                 sprite9.y = app.screen.height / 10 - 4*spriteHeight
                 gameConainter.addChild(sprite9)
+                if (data.row2[4] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                }
                 setTimeout(()=>{spinAnimation(sprite9, app.screen.height / 10 + 1*sprite0.height)},1200)
             }
             if (data.row3[0] == symbol) {
@@ -623,6 +669,9 @@ async function spin() {
                 sprite10.x = app.screen.width / 3.3 + 4*spriteWidth// 2.95
                 sprite10.y = app.screen.height / 10 - 4*spriteHeight
                 gameConainter.addChild(sprite10)
+                if (data.row3[0] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                }
                 setTimeout(()=>{spinAnimation(sprite10, app.screen.height / 10 + 1*sprite0.height)},1500)
             }
             if (data.row3[1] == symbol) {
@@ -633,6 +682,9 @@ async function spin() {
                 sprite11.x = app.screen.width / 3.3 + 5*spriteWidth // 2.95
                 sprite11.y = app.screen.height / 10 + -4*spriteHeight
                 gameConainter.addChild(sprite11)
+                if (data.row3[1] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                }
                 setTimeout(()=>{spinAnimation(sprite11, app.screen.height / 10 + 1*sprite0.height)},1800)
             }
             if (data.row3[2] == symbol) {
@@ -643,6 +695,9 @@ async function spin() {
                 sprite12.x = app.screen.width / 3.3 + 0*spriteWidth// 2.95
                 sprite12.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite12)
+                if (data.row3[2] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                }
                 setTimeout(()=>{spinAnimation(sprite12, app.screen.height / 10 + 2*sprite0.height)},300)
             }
             if (data.row3[3] == symbol) {
@@ -653,6 +708,9 @@ async function spin() {
                 sprite13.x = app.screen.width / 3.3 + 1*spriteWidth // 2.95
                 sprite13.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite13)
+                if (data.row3[3] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                }
                 setTimeout(()=>{spinAnimation(sprite13, app.screen.height / 10 + 2*sprite0.height)},600)
             }
             if (data.row3[4] == symbol) {
@@ -663,6 +721,9 @@ async function spin() {
                 sprite14.x = app.screen.width / 3.3 + 2*spriteWidth // 2.95
                 sprite14.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite14)
+                if (data.row3[4] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                }
                 setTimeout(()=>{spinAnimation(sprite14, app.screen.height / 10 + 2*sprite0.height)},900)
             }
             if (data.row4[0] == symbol) {
@@ -673,6 +734,9 @@ async function spin() {
                 sprite15.x = app.screen.width / 3.3 + 3*spriteWidth // 2.95
                 sprite15.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite15)
+                if (data.row4[0] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                }
                 setTimeout(()=>{spinAnimation(sprite15, app.screen.height / 10 + 2*sprite0.height)},1200)
             }
             if (data.row4[1] == symbol) {
@@ -683,6 +747,9 @@ async function spin() {
                 sprite16.x = app.screen.width / 3.3 + 4*spriteWidth // 2.95
                 sprite16.y = app.screen.height / 10-3*spriteHeight
                 gameConainter.addChild(sprite16)
+                if (data.row4[1] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                }
                 setTimeout(()=>{spinAnimation(sprite16, app.screen.height / 10 + 2*sprite0.height)},1500)
 
             }
@@ -694,6 +761,9 @@ async function spin() {
                 sprite17.x = app.screen.width / 3.3 + 5*spriteWidth // 2.95
                 sprite17.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite17)
+                if (data.row4[2] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                }
                 setTimeout(()=>{spinAnimation(sprite17, app.screen.height / 10 + 2*sprite0.height)},1800)
             }
             if (data.row4[3] == symbol) {
@@ -704,6 +774,9 @@ async function spin() {
                 sprite18.x = app.screen.width / 3.3 + 0*spriteWidth // 2.95
                 sprite18.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite18)
+                if (data.row4[3] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                }
                 setTimeout(()=>{spinAnimation(sprite18, app.screen.height / 10 + 3*sprite0.height)},300)
             }
             if (data.row4[4] == symbol) {
@@ -714,6 +787,9 @@ async function spin() {
                 sprite19.x = app.screen.width / 3.3 + 1*spriteWidth// 2.95
                 sprite19.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite19)
+                if (data.row4[4] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                }
                 setTimeout(()=>{spinAnimation(sprite19, app.screen.height / 10 + 3*sprite0.height)},600)
             }
             if (data.row5[0] == symbol) {
@@ -724,6 +800,9 @@ async function spin() {
                 sprite20.x = app.screen.width / 3.3 + 2*spriteWidth// 2.95
                 sprite20.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite20)
+                if (data.row5[0] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                }
                 setTimeout(()=>{spinAnimation(sprite20, app.screen.height / 10 + 3*sprite0.height)},900)
             }
             if (data.row5[1] == symbol) {
@@ -734,6 +813,9 @@ async function spin() {
                 sprite21.x = app.screen.width / 3.3 + 3*spriteWidth // 2.95
                 sprite21.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite21)
+                if (data.row5[1] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                }
                 setTimeout(()=>{spinAnimation(sprite21, app.screen.height / 10 + 3*sprite0.height)},1200)
             }
             if (data.row5[2] == symbol) {
@@ -744,6 +826,9 @@ async function spin() {
                 sprite22.x = app.screen.width / 3.3 + 4*spriteWidth // 2.95
                 sprite22.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite22)
+                if (data.row5[2] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                }
                 setTimeout(()=>{spinAnimation(sprite22, app.screen.height / 10 + 3*sprite0.height)},1500)
             }
             if (data.row5[3] == symbol) {
@@ -754,6 +839,9 @@ async function spin() {
                 sprite23.x = app.screen.width / 3.3 + 5*spriteWidth // 2.95
                 sprite23.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite23)
+                if (data.row5[3] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                }
                 setTimeout(()=>{spinAnimation(sprite23, app.screen.height / 10 + 3*sprite0.height)},1800)
             }
             if (data.row5[4] == symbol) {
@@ -764,6 +852,9 @@ async function spin() {
                 sprite24.x = app.screen.width / 3.3 + 0*spriteWidth // 2.95
                 sprite24.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite24)
+                if (data.row5[4] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                }
                 setTimeout(()=>{spinAnimation(sprite24, app.screen.height / 10 + 4*sprite0.height)},300)
                 setTimeout(()=>{spinSound.play()},700)
             }
@@ -775,6 +866,9 @@ async function spin() {
                 sprite25.x = app.screen.width / 3.3 + 1*spriteWidth // 2.95
                 sprite25.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite25)
+                if (data.row6[0] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                }
                 setTimeout(()=>{spinAnimation(sprite25, app.screen.height / 10 + 4*sprite0.height)},600)
                 setTimeout(()=>{spinSound.play()},1000)
             }
@@ -786,6 +880,9 @@ async function spin() {
                 sprite26.x = app.screen.width / 3.3 + 2*spriteWidth// 2.95
                 sprite26.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite26)
+                if (data.row6[1] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                }
                 setTimeout(()=>{spinAnimation(sprite26, app.screen.height / 10 + 4*sprite0.height)},900)
                 setTimeout(()=>{spinSound.play()},1300)
             }
@@ -797,6 +894,9 @@ async function spin() {
                 sprite27.x = app.screen.width / 3.3 + 3*spriteWidth // 2.95
                 sprite27.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite27)
+                if (data.row6[2] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                }
                 setTimeout(()=>{spinAnimation(sprite27, app.screen.height / 10 + 4*sprite0.height)},1200)
                 setTimeout(()=>{spinSound.play()},1600)
             }
@@ -808,6 +908,9 @@ async function spin() {
                 sprite28.x = app.screen.width / 3.3 + 4*spriteWidth // 2.95
                 sprite28.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite28)
+                if (data.row6[3] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                }
                 setTimeout(()=>{spinAnimation(sprite28, app.screen.height / 10 + 4*sprite0.height)},1500)
                 setTimeout(()=>{spinSound.play()},1900)
             }
@@ -819,6 +922,9 @@ async function spin() {
                 sprite29.x = app.screen.width / 3.3 + 5*spriteWidth // 2.95
                 sprite29.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite29)
+                if (data.row6[4] == '⚡') {
+                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                }
                 setTimeout(()=>{spinAnimation(sprite29, app.screen.height / 10 + 4*sprite0.height)},1800)
                 setTimeout(()=>{spinSound.play()},2200)
             }
@@ -835,6 +941,7 @@ await spinOnLoad()
     const button = document.getElementById('spinButton')
     button.addEventListener('click', async ()=> {
         music.play()
+        
         
         spin()
 
