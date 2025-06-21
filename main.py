@@ -5,10 +5,9 @@ import statistics
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import FileResponse
-
+import math
 app = FastAPI()
-
-
+payout=0
 result=0
 symbols = (
     ['J'] * 100 +    # символы
@@ -185,6 +184,7 @@ def spinTest():
     counter = 0
     result=[]
     multiplier=1
+    global payout
     payout=0
     bonusCount=0
     for i in range(0,30):
@@ -219,8 +219,15 @@ def spinTest():
     
     return {'payout':payout,'сколько символов сыграло': counter, 'bigWinCount': bigWinCount, 'hitFrequency':hitFreq, 'bonusCount': bonusCount, 'symbolsPayout': gameResults, 'multiplier':multiplier, 'row1': row1,'row2':row2,'row3':row3,'row4':row4,'row5':row5,'row6':row6}
     
-
-
+userBalance = 100000
+@app.get('/api/balance')
+def balance():
+    global userBalance
+    global payout
+    beforeEndOfTheSpin = userBalance - 100
+    userBalance = userBalance - 100 + payout
+    print(type(payout))
+    return {'balance': userBalance, 'beforeEndOfTheSpin': beforeEndOfTheSpin, 'payout': math.floor(payout)}
 
 
 
@@ -256,10 +263,4 @@ def stats():
     }
 
 
-class Balance(BaseModel):
-    balance: int
-#
-# @app.post('/')
-# def create_balance(newBalance = Balance):
-#     return {'successs':True}
-#
+

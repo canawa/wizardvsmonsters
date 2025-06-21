@@ -52,7 +52,9 @@ let sprite27
 let sprite28
 let sprite29
 
-
+// Глобальные переменные для текстовых элементов
+let balanceText = new PIXI.Text('Кредит: $100000')
+let payoutText = new PIXI.Text('Выигрыш: 0')
 
 window.addEventListener('DOMContentLoaded', async () => {
     const app = new PIXI.Application()
@@ -106,7 +108,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     const monster = new PIXI.Sprite(PIXI.Assets.get('monster'))
     const logo = new PIXI.Sprite(PIXI.Assets.get('logo'))
     const spinButton = new PIXI.Sprite(PIXI.Assets.get('spin'))
+    const hamburger = new PIXI.Sprite(PIXI.Assets.get('hamburger'))
     const backgroundContainer = new PIXI.Container()
+  
     app.stage.addChild(backgroundContainer) // добавили новый контейнер на сцену
     backgroundContainer.addChildAt(background,0) // теперь пихаем в новый контейнер фон
 
@@ -198,15 +202,55 @@ menu.endFill()
 
 menuContainer.addChild(menu)
 menuContainer.addChild(spinButton)
+menuContainer.addChild(hamburger)
 
 menu.x = app.screen.width / 3.35
 menu.y = app.screen.width / 1.97
+
+hamburger.width = app.screen.width / 25
+hamburger.scale.y = hamburger.scale.x
+hamburger.x = app.screen.width / 3.25
+hamburger.y = app.screen.height /  1.1
 
 spinButton.width = app.screen.width / 10
 spinButton.scale.y = spinButton.scale.x
 spinButton.x = app.screen.width / 1.38
 spinButton.y = app.screen.height / 1.12400
 // menu.anchor.set(0.5,0.5) - у PIXI.GRAPHICS нет acnhor почему то, придется через костыль
+
+spinButton.eventMode = 'static' // делаем кнопку статически интерактивной (реагирует на клик, но не передает события детям)
+spinButton.cursor = 'pointer'
+
+// Флаг для блокировки кнопки
+let isSpinning = false
+
+spinButton.on('pointerdown', async () => { // нажатие на кнопку спина pointerdown это при отпускании кнопки
+    // Проверяем, не заблокирована ли кнопка
+    if (isSpinning==true) {
+        console.log('Спин уже в процессе, подождите...')
+        return // просто выходим из функции
+    }
+    
+    console.log('Кнопка спина нажата!') // просто для отладки
+    
+    // Блокируем кнопку
+    isSpinning = true // блокируем кнопку
+    spinButton.alpha = 0.5 // Делаем кнопку полупрозрачной
+    spinButton.cursor = 'not-allowed' // Меняем курсор
+    
+    music.play() // играем музыку
+    await spin() // вызываем функцию spin
+    await balance()
+    // Разблокируем кнопку через 4 секунды
+    setTimeout(() => {
+        isSpinning = false
+        spinButton.alpha = 1.0 // Возвращаем полную прозрачность
+        spinButton.cursor = 'pointer' // Возвращаем курсор
+        console.log('Кнопка спина разблокирована!')
+    }, 2500)
+})
+
+
 
 async function spinAnimation(thisSprite,targetY) {
     const fallAnimation = (time)=>{
@@ -964,29 +1008,49 @@ async function spin() {
    
 await spinOnLoad()
 
+async function balance() {
+    let response = await fetch('api/balance') // запрос к серверу
+    let data = await response.json() // получаем данные
+    balanceText.text = `Кредит: ${data.beforeEndOfTheSpin}₽`
+    setTimeout(() => {
+        balanceText.text = `Кредит: ${data.balance}₽`
+    }, 2500)
 
-    const button = document.getElementById('spinButton')
-    button.addEventListener('click', async ()=> {
-        music.play()
-        
-        
-        spin()
+    // Обновляем существующий payoutText вместо создания нового
+    payoutText.text = `Выигрыш: 0₽`
+    setTimeout(() => {
+        payoutText.text = `Выигрыш: ${data.payout}₽`
+    }, 2500)
+   
+}
 
-        
-        const game = document.getElementById('game')
-        // game.innerHTML = `
-        //     <p>${data.row1}</p>
-        //     <p>${data.row2}</p>
-        //     <p>${data.row3}</p>
-        //     <p>${data.row4}</p>
-        //     <p>${data.row5}</p>
-        //     <p>${data.row6}</p>
-        //     <p>${data.payout}</p>
-        //     <p>${data.symbolsPayout}</p>
-        // `
-        
-        
-    })
+// Функция для инициализации игры без автоматического спина
+async function initializeGame() {
+    // Добавляем текстовые элементы в контейнер при инициализации
+    balanceText.style.fontSize = 24
+    balanceText.style.fontFamily = 'Arial'
+    balanceText.style.fill = 0xffffff
+    balanceText.style.stroke = 0x000000
+    balanceText.style.strokeThickness = 2
+    balanceText.x = app.screen.width / 2.85
+    balanceText.y = app.screen.height / 1.08
+    menuContainer.addChild(balanceText)
+
+    payoutText.style.fontSize = 24
+    payoutText.style.fontFamily = 'Arial'
+    payoutText.style.fill = 0xffffff
+    payoutText.style.stroke = 0x000000
+    payoutText.style.strokeThickness = 2
+    payoutText.x = app.screen.width / 1.85
+    payoutText.y = app.screen.height / 1.08
+    menuContainer.addChild(payoutText)
+
+    // Инициализируем начальный баланс
+    await balance()
+}
+
+// Инициализируем игру без автоматического спина
+await initializeGame()
 
 
 
