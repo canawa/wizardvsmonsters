@@ -84,7 +84,9 @@ window.addEventListener('DOMContentLoaded', async () => {
             {alias:'⚡', src: '/static/img/bonus.png'},
             {alias: '🚪', src: '/static/img/mega_wild.png'},
             {alias: 'monster', src: '/static/img/monster.png'},
-            {alias: 'logo', src: '/static/img/logo.webp'}
+            {alias: 'logo', src: '/static/img/logo.webp'},
+            {alias: 'spin', src: '/static/img/spin.png'},
+            {alias: 'hamburger', src: '/static/img/hamburger.png'}
 
 
 
@@ -103,16 +105,19 @@ window.addEventListener('DOMContentLoaded', async () => {
     const magician = new PIXI.Sprite(PIXI.Assets.get('magician'))
     const monster = new PIXI.Sprite(PIXI.Assets.get('monster'))
     const logo = new PIXI.Sprite(PIXI.Assets.get('logo'))
-
+    const spinButton = new PIXI.Sprite(PIXI.Assets.get('spin'))
     const backgroundContainer = new PIXI.Container()
     app.stage.addChild(backgroundContainer) // добавили новый контейнер на сцену
     backgroundContainer.addChildAt(background,0) // теперь пихаем в новый контейнер фон
 
+ 
+    
     const slotReels = new PIXI.Container()
     app.stage.addChild(slotReels)
     slotReels.addChild(reels,magician)
     slotReels.addChildAt(monster,0)
     slotReels.addChildAt(logo,0)
+
 
     logo.anchor.set(0.5)
     logo.width = app.stage.width / 8
@@ -165,7 +170,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     background.x = app.screen.width / 2
     background.y = app.screen.height / 2
 
-
+   
     if (app.screen.width >= app.screen.height ) {
         background.width = app.screen.width * 1.2 // чтобы немножко выходило за края
         background.scale.y = background.scale.x // чтобы сохранить пропорции
@@ -181,6 +186,28 @@ graphics.drawRect(app.screen.width/3.5,app.screen.height/11.8,app.screen.width/1
 graphics.endFill()
 app.stage.addChild(graphics)
 gameConainter.mask = graphics
+
+const menuContainer = new PIXI.Container()
+app.stage.addChild(menuContainer)
+const menu = new PIXI.Graphics()
+menu.beginFill(0x49423D, 0.8)
+const menuWidth = backgroundContainer.width / 2.3
+const menuHeight = backgroundContainer.height / 17
+menu.drawRoundedRect(0,0, menuWidth, menuHeight)
+menu.endFill()
+
+menuContainer.addChild(menu)
+menuContainer.addChild(spinButton)
+
+menu.x = app.screen.width / 3.35
+menu.y = app.screen.width / 1.97
+
+spinButton.width = app.screen.width / 10
+spinButton.scale.y = spinButton.scale.x
+spinButton.x = app.screen.width / 1.38
+spinButton.y = app.screen.height / 1.12400
+// menu.anchor.set(0.5,0.5) - у PIXI.GRAPHICS нет acnhor почему то, придется через костыль
+
 async function spinAnimation(thisSprite,targetY) {
     const fallAnimation = (time)=>{
         const speed=20
