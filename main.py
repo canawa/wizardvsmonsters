@@ -220,6 +220,12 @@ def spinTest():
     return {'payout':payout,'сколько символов сыграло': counter, 'bigWinCount': bigWinCount, 'hitFrequency':hitFreq, 'bonusCount': bonusCount, 'symbolsPayout': gameResults, 'multiplier':multiplier, 'row1': row1,'row2':row2,'row3':row3,'row4':row4,'row5':row5,'row6':row6}
     
 userBalance = 100000
+@app.get('/api/getBalanceOnOpen')
+def getBalanceOnOpen():
+    global userBalance
+    global payout
+    return {'balance': userBalance, 'payout': math.floor(payout)}
+
 @app.get('/api/balance')
 def balance():
     global userBalance

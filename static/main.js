@@ -52,9 +52,7 @@ let sprite27
 let sprite28
 let sprite29
 
-// Глобальные переменные для текстовых элементов
-let balanceText = new PIXI.Text('Кредит: $100000')
-let payoutText = new PIXI.Text('Выигрыш: 0')
+
 
 function formatNumber(num) {
     return num.toLocaleString('ru-RU') + '₽' // форматируем число в рублях (просто готовая функция)
@@ -224,6 +222,27 @@ spinButton.y = app.screen.height / 1.12400
 
 spinButton.eventMode = 'static' // делаем кнопку статически интерактивной (реагирует на клик, но не передает события детям)
 spinButton.cursor = 'pointer'
+
+// Глобальные переменные для текстовых элементов
+let balanceText = new PIXI.Text('Кредит: ?')
+balanceText.style.fontSize = 24
+balanceText.style.fontFamily = 'Arial'
+balanceText.style.fill = 0xffffff
+balanceText.style.stroke = 0x000000
+balanceText.style.strokeThickness = 2
+menuContainer.addChild(balanceText)
+balanceText.x = app.screen.width / 2.85
+balanceText.y = app.screen.height / 1.08
+
+let payoutText = new PIXI.Text('Выигрыш: 0')
+payoutText.style.fontSize = 24
+payoutText.style.fontFamily = 'Arial'
+payoutText.style.fill = 0xffffff
+payoutText.style.stroke = 0x000000
+payoutText.style.strokeThickness = 2
+payoutText.x = app.screen.width / 1.85
+payoutText.y = app.screen.height / 1.08
+menuContainer.addChild(payoutText)
 
 // Флаг для блокировки кнопки
 let isSpinning = false
@@ -1019,33 +1038,26 @@ async function balance() {
     setTimeout(() => {
         balanceText.text = `Кредит: ${formatNumber(data.balance)}`
     }, 2500)
-    balanceText.style.fontSize = 24
-    balanceText.style.fontFamily = 'Arial'
-    balanceText.style.fill = 0xffffff
-    balanceText.style.stroke = 0x000000
-    balanceText.style.strokeThickness = 2
-    menuContainer.addChild(balanceText)
-    balanceText.x = app.screen.width / 2.85
-    balanceText.y = app.screen.height / 1.08
+
 
     // Обновляем существующий payoutText вместо создания нового
     payoutText.text = `Выигрыш: ${formatNumber(0)}`
     setTimeout(() => {
         payoutText.text = `Выигрыш: ${formatNumber(data.payout)}`
     }, 2500)
-    payoutText.style.fontSize = 24
-    payoutText.style.fontFamily = 'Arial'
-    payoutText.style.fill = 0xffffff
-    payoutText.style.stroke = 0x000000
-    payoutText.style.strokeThickness = 2
-    payoutText.x = app.screen.width / 1.85
-    payoutText.y = app.screen.height / 1.08
-    menuContainer.addChild(payoutText)
+ 
    
 }
 
-await balance()
 
+async function getBalanceOnOpen() {
+    let response = await fetch('api/getBalanceOnOpen')
+    let data = await response.json()
+    balanceText.text = `Кредит: ${formatNumber(data.balance)}` // тоже самое ток при первом открытии
+    payoutText.text = `Выигрыш: ${formatNumber(data.payout)}` // тоже самое ток при первом открытии
+}
+
+await getBalanceOnOpen()
 
 
 })
