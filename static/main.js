@@ -126,7 +126,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     const backgroundContainer = new PIXI.Container()
     const switchOn = new PIXI.Sprite(PIXI.Assets.get('onSwitch'))
     const switchOff = new PIXI.Sprite(PIXI.Assets.get('offSwitch'))
-
+    const sfxOn = new PIXI.Sprite(PIXI.Assets.get('onSwitch'))
+    const sfxOff = new PIXI.Sprite(PIXI.Assets.get('offSwitch'))
     app.stage.addChild(backgroundContainer) // добавили новый контейнер на сцену
     backgroundContainer.addChildAt(background,0) // теперь пихаем в новый контейнер фон
 
@@ -286,6 +287,59 @@ hamburger.on('pointerdown', () => {
         fontFamily: 'Arial',
         fill: 0xB5B8B1,
     })
+    const sfx = new PIXI.Text('ЗВУКИ И ВСЕ SFX:', {
+        fontSize: 24,
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+        fill: 0xffffff,
+    })
+    const sfxDescription = new PIXI.Text('Включить или выключить звуки игры', {
+        fontSize: 11,
+        fontFamily: 'Arial',
+        fill: 0xB5B8B1,
+    })
+   
+    menuContainer.addChild(sfx)
+    menuContainer.addChild(sfxDescription)
+    menuContainer.addChild(sfxOn)
+    sfx.x = app.screen.width / 3.1
+    sfx.y = app.screen.height / 2.9
+    sfxDescription.x = app.screen.width / 3.1
+    sfxDescription.y = app.screen.height / 2.55
+    sfxOn.width = app.screen.width / 18.5
+    sfxOn.scale.y = sfxOn.scale.x
+    sfxOn.x = app.screen.width / 1.90
+    sfxOn.y = app.screen.height / 2.85
+    sfxOff.width = app.screen.width / 18.5
+    sfxOff.scale.y = sfxOff.scale.x
+    sfxOff.x = app.screen.width / 1.90
+    sfxOff.y = app.screen.height / 2.85
+    sfxOn.eventMode = 'static'
+    sfxOn.cursor = 'pointer'
+    sfxOff.eventMode = 'static'
+    sfxOff.cursor = 'pointer'
+    if (spinSound.volume() == 0.4) {
+        menuContainer.addChild(sfxOn)
+    }
+    else {
+        menuContainer.addChild(sfxOff)
+    }
+    sfxOn.on('pointerdown', () => {
+        menuContainer.removeChild(sfxOn)
+        menuContainer.addChild(sfxOff)
+        spinSound.volume(0)
+        shutterSound.volume(0)
+        swooshSpin.volume(0)
+
+    })
+    sfxOff.on('pointerdown', () => {
+        menuContainer.removeChild(sfxOff)
+        menuContainer.addChild(sfxOn)
+        spinSound.volume(0.4)
+        shutterSound.volume(0.4)
+        swooshSpin.volume(0.4)
+        button_click.volume(1)
+    })
     musicDescription.x = app.screen.width / 3.1
     musicDescription.y = app.screen.height / 3.4
     menuContainer.addChild(musicDescription)
@@ -307,6 +361,10 @@ hamburger.on('pointerdown', () => {
         menuContainer.removeChild(switchOff)
         menuContainer.removeChild(musicSwitch)
         menuContainer.removeChild(musicDescription)
+        menuContainer.removeChild(sfx)
+        menuContainer.removeChild(sfxDescription)
+        menuContainer.removeChild(sfxOn)
+        menuContainer.removeChild(sfxOff)
 
     })
     }
