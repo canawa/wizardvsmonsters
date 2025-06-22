@@ -3,7 +3,7 @@ import * as PIXI from '/static/pixi.mjs'
 const music = new Howl ({
    src : ['/static/sounds/music.wav'],
    loop : true,
-   volume : 0.1
+   volume : 0.04
 })
 const spinSound = new Howl ({
     src : ['/static/sounds/spinSound.mp3'],
@@ -19,8 +19,18 @@ const swooshSpin = new Howl ({
 })
 const bonusSymbolDropped = new Howl ({
     src : ['/static/sounds/bonusSymbolSound.mp3'],
-    volume : 2
+    volume : 0.5
 })
+
+const winSound = new Howl ({
+    src : ['/static/sounds/winSound.mp3'],
+    volume : 0.4
+})
+const shutterSound = new Howl ({
+    src : ['/static/sounds/shutterSound.mp3'],
+    volume : 0.4
+})
+
 let sprite0
 let sprite1
 let sprite2
@@ -51,7 +61,7 @@ let sprite26
 let sprite27
 let sprite28
 let sprite29
-
+let settingsShown = false
 
 
 function formatNumber(num) {
@@ -90,7 +100,9 @@ window.addEventListener('DOMContentLoaded', async () => {
             {alias: 'monster', src: '/static/img/monster.png'},
             {alias: 'logo', src: '/static/img/logo.webp'},
             {alias: 'spin', src: '/static/img/spin.png'},
-            {alias: 'hamburger', src: '/static/img/hamburger.png'}
+            {alias: 'hamburger', src: '/static/img/hamburger.png'},
+            {alias: 'onSwitch', src: '/static/img/onSwitch.png'},
+            {alias: 'offSwitch', src: '/static/img/offSwitch.png'},
 
 
 
@@ -112,7 +124,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     const spinButton = new PIXI.Sprite(PIXI.Assets.get('spin'))
     const hamburger = new PIXI.Sprite(PIXI.Assets.get('hamburger'))
     const backgroundContainer = new PIXI.Container()
-  
+    const switchOn = new PIXI.Sprite(PIXI.Assets.get('onSwitch'))
+    const switchOff = new PIXI.Sprite(PIXI.Assets.get('offSwitch'))
+
     app.stage.addChild(backgroundContainer) // добавили новый контейнер на сцену
     backgroundContainer.addChildAt(background,0) // теперь пихаем в новый контейнер фон
 
@@ -213,6 +227,91 @@ hamburger.width = app.screen.width / 25
 hamburger.scale.y = hamburger.scale.x
 hamburger.x = app.screen.width / 3.25
 hamburger.y = app.screen.height /  1.1
+hamburger.eventMode = 'static'
+hamburger.cursor = 'pointer'
+hamburger.on('pointerdown', () => {
+    hamburger.eventMode = 'none'
+    const settings = new PIXI.Graphics()
+    if (settingsShown == false) {
+    settings.beginFill(0x49423D, 0.95)
+    settings.lineStyle(2, 0xFFFFFF) // обводка: толщина 2, белый цвет 
+    settings.drawRoundedRect(0,0, app.screen.width / 2, app.screen.height / 2)
+    settings.endFill()
+    menuContainer.addChild(settings)
+    settings.x = app.screen.width / 3.2
+    settings.y = app.screen.height / 4.5
+    settings.eventMode = 'static'
+    settingsShown = true
+    const closeSettings = new PIXI.Text('X', {
+        fontSize: 24,
+        fontFamily: 'Arial',
+        fill: 0xffffff,
+    })
+    if (music.volume() == 0.04) {
+        menuContainer.addChild(switchOn)
+    }
+    else {
+        menuContainer.addChild(switchOff)
+    }
+    switchOn.width = app.screen.width / 18.5
+    switchOn.scale.y = switchOn.scale.x
+    switchOn.x = app.screen.width / 1.90
+    switchOn.y = app.screen.height / 3.85
+    switchOn.eventMode = 'static'
+    switchOn.cursor = 'pointer'
+    switchOn.on('pointerdown', () => {
+        menuContainer.removeChild(switchOn)
+        menuContainer.addChild(switchOff)
+        music.volume(0)
+    })
+    switchOff.width = app.screen.width / 18.5
+    switchOff.scale.y = switchOff.scale.x
+    switchOff.x = app.screen.width / 1.90
+    switchOff.y = app.screen.height / 3.85
+    switchOff.eventMode = 'static'
+    switchOff.cursor = 'pointer'
+    switchOff.on('pointerdown', () => {
+        menuContainer.removeChild(switchOff)
+        menuContainer.addChild(switchOn)
+        music.volume(0.04)
+    })
+    const musicSwitch = new PIXI.Text('ФОНОВАЯ МУЗЫКА:', {
+        fontSize: 24,
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+        fill: 0xffffff,
+    })
+    const musicDescription = new PIXI.Text('Включить или выключить фоновую музыку', {
+        fontSize: 11,
+        fontFamily: 'Arial',
+        fill: 0xB5B8B1,
+    })
+    musicDescription.x = app.screen.width / 3.1
+    musicDescription.y = app.screen.height / 3.4
+    menuContainer.addChild(musicDescription)
+    musicSwitch.x = app.screen.width / 3.1
+    musicSwitch.y = app.screen.height / 4
+    menuContainer.addChild(musicSwitch)
+    menuContainer.addChild(closeSettings)
+    closeSettings.x = app.screen.width / 1.27
+    closeSettings.y = app.screen.height / 4.3
+    closeSettings.eventMode = 'static'
+    closeSettings.cursor = 'pointer'
+    closeSettings.on('pointerdown', () => {
+        menuContainer.removeChild(settings)
+        settingsShown = false
+        menuContainer.removeChild(closeSettings)
+        hamburger.eventMode = 'static'
+        hamburger.cursor = 'pointer'
+        menuContainer.removeChild(switchOn)
+        menuContainer.removeChild(switchOff)
+        menuContainer.removeChild(musicSwitch)
+        menuContainer.removeChild(musicDescription)
+
+    })
+    }
+    
+})
 
 spinButton.width = app.screen.width / 10
 spinButton.scale.y = spinButton.scale.x
@@ -226,6 +325,7 @@ spinButton.cursor = 'pointer'
 // Глобальные переменные для текстовых элементов
 let balanceText = new PIXI.Text('Кредит: ?')
 balanceText.style.fontSize = 24
+
 balanceText.style.fontFamily = 'Arial'
 balanceText.style.fill = 0xffffff
 balanceText.style.stroke = 0x000000
@@ -240,7 +340,7 @@ payoutText.style.fontFamily = 'Arial'
 payoutText.style.fill = 0xffffff
 payoutText.style.stroke = 0x000000
 payoutText.style.strokeThickness = 2
-payoutText.x = app.screen.width / 1.85
+payoutText.x = app.screen.width / 1.9
 payoutText.y = app.screen.height / 1.08
 menuContainer.addChild(payoutText)
 
@@ -1022,7 +1122,7 @@ async function spin() {
                 setTimeout(()=>{spinAnimation(sprite29, app.screen.height / 10 + 4*sprite0.height)},1800)
                 setTimeout(()=>{spinSound.play()},2200)
             }
-           
+          
 
         }
 
@@ -1037,6 +1137,7 @@ async function balance() {
     balanceText.text = `Кредит: ${formatNumber(data.beforeEndOfTheSpin)}`
     setTimeout(() => {
         balanceText.text = `Кредит: ${formatNumber(data.balance)}`
+        
     }, 2500)
 
 
@@ -1044,6 +1145,9 @@ async function balance() {
     payoutText.text = `Выигрыш: ${formatNumber(0)}`
     setTimeout(() => {
         payoutText.text = `Выигрыш: ${formatNumber(data.payout)}`
+        if (data.payout > 0) {
+            winSound.play()
+        }
     }, 2500)
  
    
