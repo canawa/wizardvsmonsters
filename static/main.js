@@ -56,6 +56,10 @@ let sprite29
 let balanceText = new PIXI.Text('Кредит: $100000')
 let payoutText = new PIXI.Text('Выигрыш: 0')
 
+function formatNumber(num) {
+    return num.toLocaleString('ru-RU') + '₽' // форматируем число в рублях (просто готовая функция)
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
     const app = new PIXI.Application()
     await app.init({
@@ -1011,31 +1015,24 @@ await spinOnLoad()
 async function balance() {
     let response = await fetch('api/balance') // запрос к серверу
     let data = await response.json() // получаем данные
-    balanceText.text = `Кредит: ${data.beforeEndOfTheSpin}₽`
+    balanceText.text = `Кредит: ${formatNumber(data.beforeEndOfTheSpin)}`
     setTimeout(() => {
-        balanceText.text = `Кредит: ${data.balance}₽`
+        balanceText.text = `Кредит: ${formatNumber(data.balance)}`
     }, 2500)
-
-    // Обновляем существующий payoutText вместо создания нового
-    payoutText.text = `Выигрыш: 0₽`
-    setTimeout(() => {
-        payoutText.text = `Выигрыш: ${data.payout}₽`
-    }, 2500)
-   
-}
-
-// Функция для инициализации игры без автоматического спина
-async function initializeGame() {
-    // Добавляем текстовые элементы в контейнер при инициализации
     balanceText.style.fontSize = 24
     balanceText.style.fontFamily = 'Arial'
     balanceText.style.fill = 0xffffff
     balanceText.style.stroke = 0x000000
     balanceText.style.strokeThickness = 2
+    menuContainer.addChild(balanceText)
     balanceText.x = app.screen.width / 2.85
     balanceText.y = app.screen.height / 1.08
-    menuContainer.addChild(balanceText)
 
+    // Обновляем существующий payoutText вместо создания нового
+    payoutText.text = `Выигрыш: ${formatNumber(0)}`
+    setTimeout(() => {
+        payoutText.text = `Выигрыш: ${formatNumber(data.payout)}`
+    }, 2500)
     payoutText.style.fontSize = 24
     payoutText.style.fontFamily = 'Arial'
     payoutText.style.fill = 0xffffff
@@ -1044,13 +1041,10 @@ async function initializeGame() {
     payoutText.x = app.screen.width / 1.85
     payoutText.y = app.screen.height / 1.08
     menuContainer.addChild(payoutText)
-
-    // Инициализируем начальный баланс
-    await balance()
+   
 }
 
-// Инициализируем игру без автоматического спина
-await initializeGame()
+await balance()
 
 
 
