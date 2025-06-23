@@ -360,6 +360,7 @@ hamburger.on('pointerdown', () => {
     musicSwitch.x = app.screen.width / 3.1
     musicSwitch.y = app.screen.height / 4
     menuContainer.addChild(musicSwitch)
+
     
         
     }
@@ -387,10 +388,13 @@ spinButton.width = app.screen.width / 10
 spinButton.scale.y = spinButton.scale.x
 spinButton.x = app.screen.width / 1.38
 spinButton.y = app.screen.height / 1.12400
+spinButton.eventMode = 'static'
+spinButton.cursor = 'pointer'
 // menu.anchor.set(0.5,0.5) - у PIXI.GRAPHICS нет acnhor почему то, придется через костыль
 changeBet.width = app.screen.width / 25
 changeBet.scale.y = changeBet.scale.x
 changeBet.x = app.screen.width / 2.9
+
 changeBet.y = app.screen.height / 1.10
 changeBet.eventMode = 'static'
 changeBet.cursor = 'pointer'
@@ -410,10 +414,12 @@ changeBet.on('pointerdown', () => {
 const changeBetMenu = new PIXI.Graphics()
 changeBetMenu.beginFill(0x49423D, 0.95)
 changeBetMenu.drawRoundedRect(0, 0, app.screen.width / 2, app.screen.height / 2)
+changeBetMenu.lineStyle(2, 0xFFFFFF)
 changeBetMenu.endFill()
 changeBetMenu.x = app.screen.width / 3.2
 changeBetMenu.y = app.screen.height / 4.5
 changeBetMenu.eventMode = 'static'
+
 
 
 // Глобальные переменные для текстовых элементов
