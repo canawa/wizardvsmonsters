@@ -11,11 +11,11 @@ const spinSound = new Howl ({
 })
 const button_click = new Howl ({
     src : ['/static/sounds/button_click.mp3'],
-    volume : 1
+    volume : 0.5
 })
 const swooshSpin = new Howl ({
     src : ['/static/sounds/swoosh.mp3'], // легкое дуновение ветра при спине
-    volume : 0.4
+    volume : 0.0
 })
 const bonusSymbolDropped = new Howl ({
     src : ['/static/sounds/bonusSymbolSound.mp3'],
@@ -72,8 +72,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     const app = new PIXI.Application()
     await app.init({
         background:0x1099bb, // мое приложение и его размеры
-        height:720,
-        width:1280
+        height:1080,
+        width:1920
     })
     document.body.appendChild(app.canvas)
 
@@ -103,6 +103,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             {alias: 'hamburger', src: '/static/img/hamburger.png'},
             {alias: 'onSwitch', src: '/static/img/onSwitch.png'},
             {alias: 'offSwitch', src: '/static/img/offSwitch.png'},
+            {alias: 'changeBet', src: '/static/img/changeBet.png'},
 
 
 
@@ -128,6 +129,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const switchOff = new PIXI.Sprite(PIXI.Assets.get('offSwitch'))
     const sfxOn = new PIXI.Sprite(PIXI.Assets.get('onSwitch'))
     const sfxOff = new PIXI.Sprite(PIXI.Assets.get('offSwitch'))
+    const changeBet = new PIXI.Sprite(PIXI.Assets.get('changeBet'))
     app.stage.addChild(backgroundContainer) // добавили новый контейнер на сцену
     backgroundContainer.addChildAt(background,0) // теперь пихаем в новый контейнер фон
 
@@ -224,6 +226,44 @@ menuContainer.addChild(hamburger)
 menu.x = app.screen.width / 3.35
 menu.y = app.screen.width / 1.97
 
+const musicSwitch = new PIXI.Text('ФОНОВАЯ МУЗЫКА:', {
+    fontSize: app.screen.width / 60,
+    fontFamily: 'Arial',
+    fontWeight: 'bold',
+    fill: 0xffffff,
+})
+const musicDescription = new PIXI.Text('Включить или выключить фоновую музыку', {
+    fontSize: app.screen.width / 110,
+    fontFamily: 'Arial',
+    fill: 0xB5B8B1,
+})
+const sfx = new PIXI.Text('ЗВУКИ И ВСЕ SFX:', {
+    fontSize: app.screen.width / 60,
+    fontFamily: 'Arial',
+    fontWeight: 'bold',
+    fill: 0xffffff,
+})
+const sfxDescription = new PIXI.Text('Включить или выключить звуки игры', {
+    fontSize: app.screen.width / 110,
+    fontFamily: 'Arial',
+    fill: 0xB5B8B1,
+})
+const closeSettings = new PIXI.Text('X', {
+    fontSize: 24,
+    fontFamily: 'Arial',
+    fill: 0xffffff,
+})
+
+const settings = new PIXI.Graphics()
+settings.beginFill(0x49423D, 0.95)
+    settings.lineStyle(2, 0xFFFFFF) // обводка: толщина 2, белый цвет 
+    settings.drawRoundedRect(0,0, app.screen.width / 2, app.screen.height / 2)
+    settings.endFill()
+    
+    settings.x = app.screen.width / 3.2
+    settings.y = app.screen.height / 4.5
+    settings.eventMode = 'static'
+
 hamburger.width = app.screen.width / 25
 hamburger.scale.y = hamburger.scale.x
 hamburger.x = app.screen.width / 3.25
@@ -231,23 +271,14 @@ hamburger.y = app.screen.height /  1.1
 hamburger.eventMode = 'static'
 hamburger.cursor = 'pointer'
 hamburger.on('pointerdown', () => {
-    hamburger.eventMode = 'none'
-    const settings = new PIXI.Graphics()
+    
+   
+   
     if (settingsShown == false) {
-    settings.beginFill(0x49423D, 0.95)
-    settings.lineStyle(2, 0xFFFFFF) // обводка: толщина 2, белый цвет 
-    settings.drawRoundedRect(0,0, app.screen.width / 2, app.screen.height / 2)
-    settings.endFill()
+    
     menuContainer.addChild(settings)
-    settings.x = app.screen.width / 3.2
-    settings.y = app.screen.height / 4.5
-    settings.eventMode = 'static'
     settingsShown = true
-    const closeSettings = new PIXI.Text('X', {
-        fontSize: 24,
-        fontFamily: 'Arial',
-        fill: 0xffffff,
-    })
+    
     if (music.volume() == 0.04) {
         menuContainer.addChild(switchOn)
     }
@@ -276,28 +307,7 @@ hamburger.on('pointerdown', () => {
         menuContainer.addChild(switchOn)
         music.volume(0.04)
     })
-    const musicSwitch = new PIXI.Text('ФОНОВАЯ МУЗЫКА:', {
-        fontSize: 24,
-        fontFamily: 'Arial',
-        fontWeight: 'bold',
-        fill: 0xffffff,
-    })
-    const musicDescription = new PIXI.Text('Включить или выключить фоновую музыку', {
-        fontSize: 11,
-        fontFamily: 'Arial',
-        fill: 0xB5B8B1,
-    })
-    const sfx = new PIXI.Text('ЗВУКИ И ВСЕ SFX:', {
-        fontSize: 24,
-        fontFamily: 'Arial',
-        fontWeight: 'bold',
-        fill: 0xffffff,
-    })
-    const sfxDescription = new PIXI.Text('Включить или выключить звуки игры', {
-        fontSize: 11,
-        fontFamily: 'Arial',
-        fill: 0xB5B8B1,
-    })
+    
    
     menuContainer.addChild(sfx)
     menuContainer.addChild(sfxDescription)
@@ -318,6 +328,9 @@ hamburger.on('pointerdown', () => {
     sfxOn.cursor = 'pointer'
     sfxOff.eventMode = 'static'
     sfxOff.cursor = 'pointer'
+
+    
+    
     if (spinSound.volume() == 0.4) {
         menuContainer.addChild(sfxOn)
     }
@@ -329,7 +342,7 @@ hamburger.on('pointerdown', () => {
         menuContainer.addChild(sfxOff)
         spinSound.volume(0)
         shutterSound.volume(0)
-        swooshSpin.volume(0)
+        
 
     })
     sfxOff.on('pointerdown', () => {
@@ -340,18 +353,17 @@ hamburger.on('pointerdown', () => {
         swooshSpin.volume(0.4)
         button_click.volume(1)
     })
+    
     musicDescription.x = app.screen.width / 3.1
     musicDescription.y = app.screen.height / 3.4
     menuContainer.addChild(musicDescription)
     musicSwitch.x = app.screen.width / 3.1
     musicSwitch.y = app.screen.height / 4
     menuContainer.addChild(musicSwitch)
-    menuContainer.addChild(closeSettings)
-    closeSettings.x = app.screen.width / 1.27
-    closeSettings.y = app.screen.height / 4.3
-    closeSettings.eventMode = 'static'
-    closeSettings.cursor = 'pointer'
-    closeSettings.on('pointerdown', () => {
+    
+        
+    }
+    else {
         menuContainer.removeChild(settings)
         settingsShown = false
         menuContainer.removeChild(closeSettings)
@@ -365,48 +377,82 @@ hamburger.on('pointerdown', () => {
         menuContainer.removeChild(sfxDescription)
         menuContainer.removeChild(sfxOn)
         menuContainer.removeChild(sfxOff)
-
-    })
     }
-    
-})
+}
 
+
+)
+let betSettingsOpened = false
 spinButton.width = app.screen.width / 10
 spinButton.scale.y = spinButton.scale.x
 spinButton.x = app.screen.width / 1.38
 spinButton.y = app.screen.height / 1.12400
 // menu.anchor.set(0.5,0.5) - у PIXI.GRAPHICS нет acnhor почему то, придется через костыль
+changeBet.width = app.screen.width / 25
+changeBet.scale.y = changeBet.scale.x
+changeBet.x = app.screen.width / 2.9
+changeBet.y = app.screen.height / 1.10
+changeBet.eventMode = 'static'
+changeBet.cursor = 'pointer'
+menuContainer.addChild(changeBet)
+changeBet.on('pointerdown', () => {
+    if (betSettingsOpened == false) {
+        betSettingsOpened = true
+        menuContainer.addChild(changeBetMenu)
+    }
+    else {
+        betSettingsOpened = false
+        menuContainer.removeChild(changeBetMenu)
+    }
+    
+})
 
-spinButton.eventMode = 'static' // делаем кнопку статически интерактивной (реагирует на клик, но не передает события детям)
-spinButton.cursor = 'pointer'
+const changeBetMenu = new PIXI.Graphics()
+changeBetMenu.beginFill(0x49423D, 0.95)
+changeBetMenu.drawRoundedRect(0, 0, app.screen.width / 2, app.screen.height / 2)
+changeBetMenu.endFill()
+changeBetMenu.x = app.screen.width / 3.2
+changeBetMenu.y = app.screen.height / 4.5
+changeBetMenu.eventMode = 'static'
+
 
 // Глобальные переменные для текстовых элементов
 let balanceText = new PIXI.Text('Кредит: ?')
-balanceText.style.fontSize = 24
+balanceText.style.fontSize = app.screen.width / 60
 
 balanceText.style.fontFamily = 'Arial'
 balanceText.style.fill = 0xffffff
 balanceText.style.stroke = 0x000000
 balanceText.style.strokeThickness = 2
 menuContainer.addChild(balanceText)
-balanceText.x = app.screen.width / 2.85
+balanceText.x = app.screen.width / 2.58
 balanceText.y = app.screen.height / 1.08
 
 let payoutText = new PIXI.Text('Выигрыш: 0')
-payoutText.style.fontSize = 24
+payoutText.style.fontSize = app.screen.width / 60
 payoutText.style.fontFamily = 'Arial'
 payoutText.style.fill = 0xffffff
 payoutText.style.stroke = 0x000000
 payoutText.style.strokeThickness = 2
-payoutText.x = app.screen.width / 1.9
-payoutText.y = app.screen.height / 1.08
-menuContainer.addChild(payoutText)
+payoutText.x = app.screen.width / 2
+payoutText.y = app.screen.height / 100
 
+
+let betText = new PIXI.Text('Ставка: 1000₽')
+betText.style.fontSize = app.screen.width / 60
+betText.style.fontFamily = 'Arial'
+betText.style.fill = 0xffffff
+betText.style.stroke = 0x000000
+betText.style.strokeThickness = 2
+betText.x = app.screen.width / 1.65
+betText.y = app.screen.height / 1.08
+menuContainer.addChild(betText)
 // Флаг для блокировки кнопки
 let isSpinning = false
 
 spinButton.on('pointerdown', async () => { // нажатие на кнопку спина pointerdown это при отпускании кнопки
     // Проверяем, не заблокирована ли кнопка
+    menuContainer.removeChild(payoutText)
     if (isSpinning==true) {
         console.log('Спин уже в процессе, подождите...')
         return // просто выходим из функции
@@ -776,11 +822,11 @@ async function spin() {
         let data = await response.json()
         gameConainter.removeChildren()
         button_click.play()
-        setTimeout(()=>{swooshSpin.play()},400)
-        setTimeout(()=>{swooshSpin.play()},800)
-        setTimeout(()=>{swooshSpin.play()},1200)
-        setTimeout(()=>{swooshSpin.play()},1600)
-        setTimeout(()=>{swooshSpin.play()},2000)
+        // setTimeout(()=>{swooshSpin.play()},400)
+        // setTimeout(()=>{swooshSpin.play()},800)
+        // setTimeout(()=>{swooshSpin.play()},1200)
+        // setTimeout(()=>{swooshSpin.play()},1600)
+        // setTimeout(()=>{swooshSpin.play()},2000)
         
         for (let symbol of symbolsArray) {
             if (data.row1[0] == symbol) {
@@ -1108,7 +1154,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},300)
                 }
                 setTimeout(()=>{spinAnimation(sprite24, app.screen.height / 10 + 4*sprite0.height)},300)
-                setTimeout(()=>{spinSound.play()},700)
+                setTimeout(()=>{spinSound.play()},900)
             }
             if (data.row6[0] == symbol) {
                 sprite25 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1122,7 +1168,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},600)
                 }
                 setTimeout(()=>{spinAnimation(sprite25, app.screen.height / 10 + 4*sprite0.height)},600)
-                setTimeout(()=>{spinSound.play()},1000)
+                setTimeout(()=>{spinSound.play()},1200)
             }
             if (data.row6[1] == symbol) {
                 sprite26 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1136,7 +1182,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},900)
                 }
                 setTimeout(()=>{spinAnimation(sprite26, app.screen.height / 10 + 4*sprite0.height)},900)
-                setTimeout(()=>{spinSound.play()},1300)
+                setTimeout(()=>{spinSound.play()},1500)
             }
             if (data.row6[2] == symbol) {
                 sprite27 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1150,7 +1196,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},1200)
                 }
                 setTimeout(()=>{spinAnimation(sprite27, app.screen.height / 10 + 4*sprite0.height)},1200)
-                setTimeout(()=>{spinSound.play()},1600)
+                setTimeout(()=>{spinSound.play()},1800)
             }
             if (data.row6[3] == symbol) {
                 sprite28 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1164,7 +1210,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},1500)
                 }
                 setTimeout(()=>{spinAnimation(sprite28, app.screen.height / 10 + 4*sprite0.height)},1500)
-                setTimeout(()=>{spinSound.play()},1900)
+                setTimeout(()=>{spinSound.play()},2100)
             }
             if (data.row6[4] == symbol) {
                 sprite29 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1178,7 +1224,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},1800)
                 }
                 setTimeout(()=>{spinAnimation(sprite29, app.screen.height / 10 + 4*sprite0.height)},1800)
-                setTimeout(()=>{spinSound.play()},2200)
+                setTimeout(()=>{spinSound.play()},2400)
             }
           
 
@@ -1205,6 +1251,7 @@ async function balance() {
         payoutText.text = `Выигрыш: ${formatNumber(data.payout)}`
         if (data.payout > 0) {
             winSound.play()
+            menuContainer.addChild(payoutText)
         }
     }, 2500)
  

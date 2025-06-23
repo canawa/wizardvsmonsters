@@ -8,6 +8,7 @@ from starlette.responses import FileResponse
 import math
 app = FastAPI()
 payout=0
+bet = 1000
 result=0
 symbols = (
     ['J'] * 100 +    # символы
@@ -179,7 +180,6 @@ bonusCount =0
 def spinTest():
     
     bigWinCount=0
-    bet = 100
     hitFreq=0
     counter = 0
     result=[]
@@ -230,8 +230,8 @@ def getBalanceOnOpen():
 def balance():
     global userBalance
     global payout
-    beforeEndOfTheSpin = userBalance - 100
-    userBalance = userBalance - 100 + payout
+    beforeEndOfTheSpin = userBalance - bet
+    userBalance = userBalance - bet + payout
     print(type(payout))
     return {'balance': userBalance, 'beforeEndOfTheSpin': beforeEndOfTheSpin, 'payout': math.floor(payout)}
 
@@ -268,5 +268,9 @@ def stats():
         'BIG WIN (10X+)':  str(float(str(sum(bigWin)/len(bigWin))[:5])*100)[:5]+'%',
     }
 
-
+@app.post('/api/setBet')
+def setBet(newUserBet:int):
+    global bet
+    bet = newUserBet
+    return {'bet': bet, 'status': 'success'}
 
