@@ -144,10 +144,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 
     logo.anchor.set(0.5)
-    logo.width = app.stage.width / 8
+    logo.width = app.screen.width / 4
     logo.scale.y = logo.scale.x
     logo.x = app.screen.width / 7
-    logo.y  = app.screen.height / 7
+    logo.y  = app.screen.height / 6
 
 
     monster.anchor.set(0.5)
@@ -272,6 +272,8 @@ hamburger.on('pointerdown', () => {
     
     menuContainer.addChild(settings)
     settingsShown = true
+    spinButton.eventMode = 'none' // потом разблокается когда выходишь из меню
+    changeBet.eventMode = 'none' // потом разблокается когда выходишь из меню
     
     if (music.volume() == 0.04) {
         menuContainer.addChild(switchOn)
@@ -372,6 +374,8 @@ hamburger.on('pointerdown', () => {
         menuContainer.removeChild(sfxDescription)
         menuContainer.removeChild(sfxOn)
         menuContainer.removeChild(sfxOff)
+        spinButton.eventMode = 'static'
+        changeBet.eventMode = 'static'
     }
 }
 
@@ -393,14 +397,39 @@ changeBet.y = app.screen.height / 1.10
 changeBet.eventMode = 'static'
 changeBet.cursor = 'pointer'
 menuContainer.addChild(changeBet)
+
+
+
 changeBet.on('pointerdown', () => {
     if (betSettingsOpened == false) {
         betSettingsOpened = true
         menuContainer.addChild(changeBetMenu)
+        spinButton.eventMode = 'none'
+        hamburger.eventMode = 'none'
+        const betVariation = [ '0.20₽', '0.40₽', '0.60₽', '0.80₽', '1.00₽', '2.00₽', '4.00₽', '8.00₽','10.00₽', '16.00₽','24.00₽', '32.00₽','64.00₽','128.00₽', '256.00₽', '512.00₽', '1024.00₽', '2048.00₽', '4096.00₽', '6000.00₽', '10000.00₽']
+            betVariation.forEach((element)=>{
+            const betVariationText = new PIXI.Text(element, {
+            fontSize: app.screen.width / 80,
+            fontFamily: 'Arial',
+            fill: 0xffffff,
+    })
+    betVariationText.anchor.set(0.5)
+    betVariationText.x = app.screen.width / 5
+    betVariationText.y = app.screen.height / 3
+    
+    menuContainer.addChild(betVariationText)
+    changeBetMenu.addChild(betVariationText)
+    
+    
+})
+
+
     }
     else {
         betSettingsOpened = false
         menuContainer.removeChild(changeBetMenu)
+        spinButton.eventMode = 'static'
+        hamburger.eventMode = 'static'
     }
     
 })
