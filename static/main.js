@@ -62,6 +62,7 @@ let sprite27
 let sprite28
 let sprite29
 let settingsShown = false
+let isOneMenuAlreadyOpened = false
 
 
 function formatNumber(num) {
@@ -248,11 +249,7 @@ const sfxDescription = new PIXI.Text('Включить или выключить
     fontFamily: 'Arial',
     fill: 0xB5B8B1,
 })
-const closeSettings = new PIXI.Text('X', {
-    fontSize: 24,
-    fontFamily: 'Arial',
-    fill: 0xffffff,
-})
+
 
 const settings = new PIXI.Graphics()
 settings.beginFill(0x49423D, 0.95)
@@ -271,9 +268,6 @@ hamburger.y = app.screen.height /  1.1
 hamburger.eventMode = 'static'
 hamburger.cursor = 'pointer'
 hamburger.on('pointerdown', () => {
-    
-   
-   
     if (settingsShown == false) {
     
     menuContainer.addChild(settings)
@@ -367,7 +361,7 @@ hamburger.on('pointerdown', () => {
     else {
         menuContainer.removeChild(settings)
         settingsShown = false
-        menuContainer.removeChild(closeSettings)
+        
         hamburger.eventMode = 'static'
         hamburger.cursor = 'pointer'
         menuContainer.removeChild(switchOn)
