@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import secrets
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import statistics
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -268,9 +268,14 @@ def stats():
         'BIG WIN (10X+)':  str(float(str(sum(bigWin)/len(bigWin))[:5])*100)[:5]+'%',
     }
 
-@app.post('/api/setBet')
-def setBet(newUserBet:int):
-    global bet
-    bet = newUserBet
-    return {'bet': bet, 'status': 'success'}
 
+
+
+class betSchema(BaseModel):
+    bet: float = Field(ge=0.20, le=10000) # больше 0.20 и меньше 10000. Пишем валидацию pyDantic
+
+@app.post('/api/setBet')
+def setBet(request: betSchema): # принимаем согласно схеме betSchema
+    global bet
+    bet = request.bet # присваиваем глобальной переменной bet значение из запроса
+    return {'newBet': bet} # доп отладка на клиента 

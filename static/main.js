@@ -63,6 +63,7 @@ let sprite28
 let sprite29
 let settingsShown = false
 let isOneMenuAlreadyOpened = false
+let betVariationsArray = [] // Глобальная переменная для хранения элементов ставок
 
 
 function formatNumber(num) {
@@ -74,7 +75,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     await app.init({
         background:0x1099bb, // мое приложение и его размеры
         height:1080,
-        width:1920
+        width:1920,
+        
     })
     document.body.appendChild(app.canvas)
 
@@ -398,30 +400,192 @@ changeBet.eventMode = 'static'
 changeBet.cursor = 'pointer'
 menuContainer.addChild(changeBet)
 
+const ChangeBetText = new PIXI.Text('ВЫБЕРИТЕ СТАВКУ:', {
+                fontSize: app.screen.width / 60,
+                fontFamily: 'Arial',
+                fill: 0xffffff,
+            })
 
 
-changeBet.on('pointerdown', () => {
+
+
+
+changeBet.on('pointerdown', async () => {
     if (betSettingsOpened == false) {
         betSettingsOpened = true
         menuContainer.addChild(changeBetMenu)
         spinButton.eventMode = 'none'
         hamburger.eventMode = 'none'
-        const betVariation = [ '0.20₽', '0.40₽', '0.60₽', '0.80₽', '1.00₽', '2.00₽', '4.00₽', '8.00₽','10.00₽', '16.00₽','24.00₽', '32.00₽','64.00₽','128.00₽', '256.00₽', '512.00₽', '1024.00₽', '2048.00₽', '4096.00₽', '6000.00₽', '10000.00₽']
-            betVariation.forEach((element)=>{
-            const betVariationText = new PIXI.Text(element, {
-            fontSize: app.screen.width / 80,
-            fontFamily: 'Arial',
-            fill: 0xffffff,
-    })
-    betVariationText.anchor.set(0.5)
-    betVariationText.x = app.screen.width / 5
-    betVariationText.y = app.screen.height / 3
-    
-    menuContainer.addChild(betVariationText)
-    changeBetMenu.addChild(betVariationText)
-    
-    
-})
+        let rightShift = -app.screen.width / 13 
+        let betSetted = false
+        let elementInRowCount = 0
+        let downShift = 0
+        const betVariation = ['0.20₽', '0.40₽', '0.60₽', '0.80₽', '1.00₽', '2.00₽', '4.00₽', '8.00₽','10.00₽', '16.00₽','24.00₽', '32.00₽','64.00₽','128.00₽', '256.00₽', '512.00₽', '1024.00₽', '2048.00₽', '4096.00₽', '6000.00₽', '10000.00₽']
+        
+        betVariation.forEach((element)=>{
+            if (elementInRowCount > 5) {
+                elementInRowCount = 0
+                rightShift = -app.screen.width / 13 
+                downShift += app.screen.height / 12
+            }
+            rightShift += app.screen.width / 13 
+            const betVariationBox = new PIXI.Graphics()
+            betVariationBox.beginFill(0x49423D, 0.95)
+            betVariationBox.drawRoundedRect(0,0, app.screen.width / 15, app.screen.height / 15)
+            betVariationBox.lineStyle(2, 0xFFFFFF)
+            betVariationBox.endFill()
+            betVariationBox.x = app.screen.width / 3 + rightShift
+            betVariationBox.y = app.screen.height / 3 + downShift
+            menuContainer.addChild(betVariationBox)
+            
+            const betSizeText = new PIXI.Text(element, {
+                fontSize: app.screen.width / 90,
+                fontFamily: 'Arial',
+                fill: 0xffffff,
+            })
+            betSizeText.anchor.set(0.5)
+            betSizeText.x = app.screen.width / 2.72 + rightShift
+            betSizeText.y = app.screen.height / 2.75 + downShift
+            menuContainer.addChild(betSizeText)
+            elementInRowCount += 1
+            betVariationsArray.push(betVariationBox)
+            betVariationsArray.push(betSizeText)
+        })
+
+        ChangeBetText.anchor.set(0.5)
+        ChangeBetText.x = app.screen.width / 1.8
+        ChangeBetText.y = app.screen.height / 3.65
+        menuContainer.addChild(ChangeBetText)
+        let setBet = 0
+        const setBetPost = async () => {   // отправка запроса на сервер
+            try {
+                console.log('Отправляем ставку:', setBet) // логируем значение
+                const response = await fetch('api/setBet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 'bet': setBet })
+                })
+                const data = await response.json()
+                console.log(data) // отладка на клиенте (то что вернул сервер в ретерне)
+                // Проверяем успешность запроса
+                betText.text = 'Ставка: ' + data.newBet + '₽'
+                if (response.ok) {
+                    console.log('Ставка успешно установлена:', data)
+                } else {
+                    console.error('Ошибка сервера:', data)
+                    console.error('Детали ошибки:', data.detail) // выводим детали
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error)
+            }
+        }
+
+       
+
+        // Вызываем функцию с await
+        for (let i = 0; i < betVariationsArray.length; i+=2) {
+           
+            
+            betVariationsArray[i].eventMode = 'static'
+            betVariationsArray[i].cursor = 'pointer'
+            betVariationsArray[i].on('pointerdown', async () => {
+                
+                if (i == 0) {
+                    setBet = 0.20
+                    betSetted = true
+                }
+                if (i == 2) {
+                    setBet = 0.40
+                    betSetted = true
+                }
+                if (i == 4) {
+                    setBet = 0.60
+                    betSetted = true
+                }
+                if (i == 6) {
+                    setBet = 0.80
+                    betSetted = true
+                }
+                if (i == 8) {
+                    setBet = 1.00
+                    betSetted = true
+                }
+                if (i == 10) {
+                    setBet = 2.00
+                    betSetted = true
+                }
+                if (i == 12) {
+                    setBet = 4.00
+                    betSetted = true
+                }
+                if (i == 14) {
+                    setBet = 8.00
+                    betSetted = true
+                }
+                if (i == 16) {
+                    setBet = 10.00
+                    betSetted = true
+                }
+                if (i == 18) {
+                    setBet = 16.00
+                    betSetted = true
+                }
+                if (i == 20) {
+                    setBet = 24.00
+                    betSetted = true
+                }
+                if (i == 22) {
+                    setBet = 32.00
+                    betSetted = true
+                }
+                if (i == 24) {
+                    setBet = 64.00
+                    betSetted = true
+                }
+                if (i == 26) {
+                    setBet = 128.00
+                    betSetted = true
+                }
+                if (i == 28) {
+                    setBet = 256.00
+                    betSetted = true
+                }
+                if (i == 30) {
+                    setBet = 512.00
+                    betSetted = true
+                }
+                if (i == 32) {
+                    setBet = 1024.00
+                    betSetted = true
+                }
+                if (i == 34) {
+                    setBet = 2048.00
+                    betSetted = true
+                }
+                if (i == 36) {
+                    setBet = 4096.00
+                    betSetted = true
+                }
+                if (i == 38) {
+                    setBet = 6000.00
+                    betSetted = true
+                }
+                if (i == 40) {
+                    setBet = 10000.00
+                    betSetted = true                    
+                }
+                if (betSetted == true) {
+                    console.log('Выбранная ставка:', setBet) // логируем выбранную ставку
+                    await setBetPost()
+                    betText.text = 'Ставка: ' + setBet + '₽'
+                    betSetted = false
+                }
+            })
+        } // конец цикла
+
+        
 
 
     }
@@ -430,9 +594,25 @@ changeBet.on('pointerdown', () => {
         menuContainer.removeChild(changeBetMenu)
         spinButton.eventMode = 'static'
         hamburger.eventMode = 'static'
+        betVariationsArray.forEach((element)=>{
+            menuContainer.removeChild(element)
+        })
+        betVariationsArray = []
+        menuContainer.removeChild(ChangeBetText)
+
+        menuContainer.removeChild(changeBetMenu)
+        for (let i = 0; i < betVariationsArray.length; i++) {
+            menuContainer.removeChild(betVariationsArray[i])
+        }
+        betVariationsArray = []
+        menuContainer.removeChild(ChangeBetText)
+        betSettingsOpened = false
+        spinButton.eventMode = 'static'
+        hamburger.eventMode = 'static'
     }
-    
-})
+        
+}
+)
 
 const changeBetMenu = new PIXI.Graphics()
 changeBetMenu.beginFill(0x49423D, 0.95)
@@ -529,8 +709,8 @@ async function spinAnimation(thisSprite,targetY) {
 
     async function spinOnLoad() {
         const symbolsArray = ['J','Q','K','A','🍓', '🍌','🍍','🔥','🫐','🍐','⚡','🚪']
-            let response = await fetch('api/spin')
-            let data = await response.json()
+            let response = await fetch('api/spin') // делаем запрос
+            let data = await response.json() // сериализуем ответ (типо из какой то херни в JSON)
             gameConainter.removeChildren()
     
             for (let symbol of symbolsArray) {
@@ -867,7 +1047,7 @@ async function spin() {
                 sprite0.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite0)
                 if (data.row1[0] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                    setTimeout(()=>{bonusSymbolDropped.play()},800)
                 }
                 setTimeout(()=>{spinAnimation(sprite0,app.screen.height / 10)},300)
             }
@@ -880,7 +1060,7 @@ async function spin() {
                 sprite1.y = app.screen.height / 10  - 5*spriteHeight
                 gameConainter.addChild(sprite1)
                 if (data.row1[1] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1100)
                 }
                 setTimeout(()=>{spinAnimation(sprite1,app.screen.height / 10)}, 600)
             }
@@ -893,7 +1073,7 @@ async function spin() {
                 sprite2.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite2)
                 if (data.row1[2] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1400)
                 }
                 setTimeout(()=>{spinAnimation(sprite2,app.screen.height / 10)}, 900)
             }
@@ -906,7 +1086,7 @@ async function spin() {
                 sprite3.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite3)
                 if (data.row1[3] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1700)
                 }
                 setTimeout(()=>{spinAnimation(sprite3,app.screen.height / 10)}, 1200)
             }
@@ -919,7 +1099,7 @@ async function spin() {
                 sprite4.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite4)
                 if (data.row1[4] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                    setTimeout(()=>{bonusSymbolDropped.play()},2000)
                 }
                 setTimeout(()=>{spinAnimation(sprite4,app.screen.height / 10)}, 1500)
             }
@@ -932,7 +1112,7 @@ async function spin() {
                 sprite5.y = app.screen.height / 10 - 5*spriteHeight
                 gameConainter.addChild(sprite5)
                 if (data.row2[0] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},2100)
+                    setTimeout(()=>{bonusSymbolDropped.play()},2300)
                 }
                 setTimeout(()=>{spinAnimation(sprite5,app.screen.height / 10)}, 1800)
             }
@@ -945,7 +1125,7 @@ async function spin() {
                 sprite6.y = app.screen.height / 10 - 4*spriteHeight
                 gameConainter.addChild(sprite6)
                 if (data.row2[1] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                    setTimeout(()=>{bonusSymbolDropped.play()},500)
                 }
                 setTimeout(()=>{spinAnimation(sprite6, app.screen.height / 10 + 1*sprite0.height)},300)
             }
@@ -958,7 +1138,7 @@ async function spin() {
                 sprite7.y = app.screen.height / 10 -4*spriteHeight
                 gameConainter.addChild(sprite7)
                 if (data.row2[2] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                    setTimeout(()=>{bonusSymbolDropped.play()},800)
                 }
                 setTimeout(()=>{spinAnimation(sprite7, app.screen.height / 10 + 1*sprite0.height)},600)
             }
@@ -971,7 +1151,7 @@ async function spin() {
                 sprite8.y = app.screen.height / 10 -4*spriteHeight
                 gameConainter.addChild(sprite8)
                 if (data.row2[3] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1100)
                 }
                 setTimeout(()=>{spinAnimation(sprite8, app.screen.height / 10 + 1*sprite0.height)},900)
             }
@@ -984,7 +1164,7 @@ async function spin() {
                 sprite9.y = app.screen.height / 10 - 4*spriteHeight
                 gameConainter.addChild(sprite9)
                 if (data.row2[4] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1400)
                 }
                 setTimeout(()=>{spinAnimation(sprite9, app.screen.height / 10 + 1*sprite0.height)},1200)
             }
@@ -997,7 +1177,7 @@ async function spin() {
                 sprite10.y = app.screen.height / 10 - 4*spriteHeight
                 gameConainter.addChild(sprite10)
                 if (data.row3[0] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1700)
                 }
                 setTimeout(()=>{spinAnimation(sprite10, app.screen.height / 10 + 1*sprite0.height)},1500)
             }
@@ -1010,7 +1190,7 @@ async function spin() {
                 sprite11.y = app.screen.height / 10 + -4*spriteHeight
                 gameConainter.addChild(sprite11)
                 if (data.row3[1] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                    setTimeout(()=>{bonusSymbolDropped.play()},2000)
                 }
                 setTimeout(()=>{spinAnimation(sprite11, app.screen.height / 10 + 1*sprite0.height)},1800)
             }
@@ -1023,7 +1203,7 @@ async function spin() {
                 sprite12.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite12)
                 if (data.row3[2] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                    setTimeout(()=>{bonusSymbolDropped.play()},500)
                 }
                 setTimeout(()=>{spinAnimation(sprite12, app.screen.height / 10 + 2*sprite0.height)},300)
             }
@@ -1036,7 +1216,7 @@ async function spin() {
                 sprite13.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite13)
                 if (data.row3[3] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                    setTimeout(()=>{bonusSymbolDropped.play()},800)
                 }
                 setTimeout(()=>{spinAnimation(sprite13, app.screen.height / 10 + 2*sprite0.height)},600)
             }
@@ -1049,7 +1229,7 @@ async function spin() {
                 sprite14.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite14)
                 if (data.row3[4] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1100)
                 }
                 setTimeout(()=>{spinAnimation(sprite14, app.screen.height / 10 + 2*sprite0.height)},900)
             }
@@ -1062,7 +1242,7 @@ async function spin() {
                 sprite15.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite15)
                 if (data.row4[0] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1400)
                 }
                 setTimeout(()=>{spinAnimation(sprite15, app.screen.height / 10 + 2*sprite0.height)},1200)
             }
@@ -1075,7 +1255,7 @@ async function spin() {
                 sprite16.y = app.screen.height / 10-3*spriteHeight
                 gameConainter.addChild(sprite16)
                 if (data.row4[1] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1700)
                 }
                 setTimeout(()=>{spinAnimation(sprite16, app.screen.height / 10 + 2*sprite0.height)},1500)
 
@@ -1089,7 +1269,7 @@ async function spin() {
                 sprite17.y = app.screen.height / 10 -3*spriteHeight
                 gameConainter.addChild(sprite17)
                 if (data.row4[2] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                    setTimeout(()=>{bonusSymbolDropped.play()},2000)
                 }
                 setTimeout(()=>{spinAnimation(sprite17, app.screen.height / 10 + 2*sprite0.height)},1800)
             }
@@ -1102,7 +1282,7 @@ async function spin() {
                 sprite18.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite18)
                 if (data.row4[3] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                    setTimeout(()=>{bonusSymbolDropped.play()},500)
                 }
                 setTimeout(()=>{spinAnimation(sprite18, app.screen.height / 10 + 3*sprite0.height)},300)
             }
@@ -1115,7 +1295,7 @@ async function spin() {
                 sprite19.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite19)
                 if (data.row4[4] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                    setTimeout(()=>{bonusSymbolDropped.play()},800)
                 }
                 setTimeout(()=>{spinAnimation(sprite19, app.screen.height / 10 + 3*sprite0.height)},600)
             }
@@ -1128,7 +1308,7 @@ async function spin() {
                 sprite20.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite20)
                 if (data.row5[0] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1100)
                 }
                 setTimeout(()=>{spinAnimation(sprite20, app.screen.height / 10 + 3*sprite0.height)},900)
             }
@@ -1141,7 +1321,7 @@ async function spin() {
                 sprite21.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite21)
                 if (data.row5[1] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1400)
                 }
                 setTimeout(()=>{spinAnimation(sprite21, app.screen.height / 10 + 3*sprite0.height)},1200)
             }
@@ -1154,7 +1334,7 @@ async function spin() {
                 sprite22.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite22)
                 if (data.row5[2] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1700)
                 }
                 setTimeout(()=>{spinAnimation(sprite22, app.screen.height / 10 + 3*sprite0.height)},1500)
             }
@@ -1167,7 +1347,7 @@ async function spin() {
                 sprite23.y = app.screen.height / 10 - 2*spriteHeight
                 gameConainter.addChild(sprite23)
                 if (data.row5[3] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                    setTimeout(()=>{bonusSymbolDropped.play()},2000)
                 }
                 setTimeout(()=>{spinAnimation(sprite23, app.screen.height / 10 + 3*sprite0.height)},1800)
             }
@@ -1180,10 +1360,10 @@ async function spin() {
                 sprite24.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite24)
                 if (data.row5[4] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},300)
+                    setTimeout(()=>{bonusSymbolDropped.play()},500)
                 }
                 setTimeout(()=>{spinAnimation(sprite24, app.screen.height / 10 + 4*sprite0.height)},300)
-                setTimeout(()=>{spinSound.play()},900)
+                setTimeout(()=>{spinSound.play()},700)
             }
             if (data.row6[0] == symbol) {
                 sprite25 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1194,10 +1374,10 @@ async function spin() {
                 sprite25.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite25)
                 if (data.row6[0] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},600)
+                    setTimeout(()=>{bonusSymbolDropped.play()},800)
                 }
                 setTimeout(()=>{spinAnimation(sprite25, app.screen.height / 10 + 4*sprite0.height)},600)
-                setTimeout(()=>{spinSound.play()},1200)
+                setTimeout(()=>{spinSound.play()},1000)
             }
             if (data.row6[1] == symbol) {
                 sprite26 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1208,10 +1388,10 @@ async function spin() {
                 sprite26.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite26)
                 if (data.row6[1] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},900)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1100)
                 }
                 setTimeout(()=>{spinAnimation(sprite26, app.screen.height / 10 + 4*sprite0.height)},900)
-                setTimeout(()=>{spinSound.play()},1500)
+                setTimeout(()=>{spinSound.play()},1300)
             }
             if (data.row6[2] == symbol) {
                 sprite27 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1222,10 +1402,10 @@ async function spin() {
                 sprite27.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite27)
                 if (data.row6[2] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1200)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1400)
                 }
                 setTimeout(()=>{spinAnimation(sprite27, app.screen.height / 10 + 4*sprite0.height)},1200)
-                setTimeout(()=>{spinSound.play()},1800)
+                setTimeout(()=>{spinSound.play()},1600)
             }
             if (data.row6[3] == symbol) {
                 sprite28 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1236,10 +1416,10 @@ async function spin() {
                 sprite28.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite28)
                 if (data.row6[3] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1500)
+                    setTimeout(()=>{bonusSymbolDropped.play()},1700)
                 }
                 setTimeout(()=>{spinAnimation(sprite28, app.screen.height / 10 + 4*sprite0.height)},1500)
-                setTimeout(()=>{spinSound.play()},2100)
+                setTimeout(()=>{spinSound.play()},1900)
             }
             if (data.row6[4] == symbol) {
                 sprite29 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1250,10 +1430,10 @@ async function spin() {
                 sprite29.y = app.screen.height / 10 -1*spriteHeight
                 gameConainter.addChild(sprite29)
                 if (data.row6[4] == '⚡') {
-                    setTimeout(()=>{bonusSymbolDropped.play()},1800)
+                    setTimeout(()=>{bonusSymbolDropped.play()},2000)
                 }
                 setTimeout(()=>{spinAnimation(sprite29, app.screen.height / 10 + 4*sprite0.height)},1800)
-                setTimeout(()=>{spinSound.play()},2400)
+                setTimeout(()=>{spinSound.play()},2200)
             }
           
 
