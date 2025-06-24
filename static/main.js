@@ -406,12 +406,19 @@ const ChangeBetText = new PIXI.Text('ВЫБЕРИТЕ СТАВКУ:', {
                 fill: 0xffffff,
             })
 
-
+const changeBetMenu = new PIXI.Graphics()
+changeBetMenu.beginFill(0x49423D, 0.95)
+changeBetMenu.drawRoundedRect(0, 0, app.screen.width / 2, app.screen.height / 2)
+changeBetMenu.lineStyle(2, 0xFFFFFF)
+changeBetMenu.endFill()
+changeBetMenu.x = app.screen.width / 3.2
+changeBetMenu.y = app.screen.height / 4.5
+changeBetMenu.eventMode = 'static'
 
 
 
 changeBet.on('pointerdown', async () => {
-    if (betSettingsOpened == false) {
+    if (betSettingsOpened == false) { // если меню не открыто, то открываем
         betSettingsOpened = true
         menuContainer.addChild(changeBetMenu)
         spinButton.eventMode = 'none'
@@ -581,6 +588,15 @@ changeBet.on('pointerdown', async () => {
                     await setBetPost()
                     betText.text = 'Ставка: ' + setBet + '₽'
                     betSetted = false
+                    menuContainer.removeChild(ChangeBetText)
+                    menuContainer.removeChild(changeBetMenu)
+                    for (let i = 0; i < betVariationsArray.length; i=i+1) {
+                        menuContainer.removeChild(betVariationsArray[i])
+                    }
+                    betVariationsArray = []
+                    betSettingsOpened = false
+                    spinButton.eventMode = 'static'
+                    hamburger.eventMode = 'static'
                 }
             })
         } // конец цикла
@@ -589,8 +605,8 @@ changeBet.on('pointerdown', async () => {
 
 
     }
-    else {
-        betSettingsOpened = false
+    else { // при повторном нажатии на кнопку выбора ставки закрываем меню
+        menuContainer.removeChild(ChangeBetText)
         menuContainer.removeChild(changeBetMenu)
         spinButton.eventMode = 'static'
         hamburger.eventMode = 'static'
@@ -598,30 +614,20 @@ changeBet.on('pointerdown', async () => {
             menuContainer.removeChild(element)
         })
         betVariationsArray = []
-        menuContainer.removeChild(ChangeBetText)
-
-        menuContainer.removeChild(changeBetMenu)
         for (let i = 0; i < betVariationsArray.length; i++) {
             menuContainer.removeChild(betVariationsArray[i])
         }
         betVariationsArray = []
-        menuContainer.removeChild(ChangeBetText)
-        betSettingsOpened = false
+        
         spinButton.eventMode = 'static'
         hamburger.eventMode = 'static'
+        betSettingsOpened = false
     }
         
 }
 )
 
-const changeBetMenu = new PIXI.Graphics()
-changeBetMenu.beginFill(0x49423D, 0.95)
-changeBetMenu.drawRoundedRect(0, 0, app.screen.width / 2, app.screen.height / 2)
-changeBetMenu.lineStyle(2, 0xFFFFFF)
-changeBetMenu.endFill()
-changeBetMenu.x = app.screen.width / 3.2
-changeBetMenu.y = app.screen.height / 4.5
-changeBetMenu.eventMode = 'static'
+
 
 
 
