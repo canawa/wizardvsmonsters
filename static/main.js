@@ -1,5 +1,23 @@
 import * as PIXI from '/static/pixi.mjs'
 
+function fullscreen() {
+    const element = document.documentElement 
+    if (element.requestFullscreen) { // если есть метод requestFullscreen (новые браузеры)
+        element.requestFullscreen()
+    }
+    else if (element.webkitRequestFullscreen) { // если есть метод webkitRequestFullscreen (старые браузеры)
+        element.webkitRequestFullscreen()
+    }
+    else if (element.msRequestFullscreen) { // если есть метод msRequestFullscreen 
+        element.msRequestFullscreen()
+    }
+    document.removeEventListener('click', fullscreen) // удаляем обработчик события (если добавить скобочки, то будет вызываться функция )
+}
+
+document.addEventListener('click', fullscreen) // добавляем обработчик события (если добавить скобочки, то будет вызываться функция сразу, а не при клике)
+
+
+
 const music = new Howl ({
    src : ['/static/sounds/music.wav'],
    loop : true,
