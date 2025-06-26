@@ -1049,12 +1049,13 @@ async function spinAnimation(thisSprite,targetY) {
 
 async function spin() {
     const symbolsArray = ['J','Q','K','A','🍓', '🍌','🍍','🔥','🫐','🍐','⚡','🚪']
-        let response = await fetch('api/spin')
-        let data = await response.json()
+    let response = await fetch('api/spin')
+    let data = await response.json()
 
+        
 
-        gameConainter.removeChildren()
-        button_click.play()
+    gameConainter.removeChildren()
+    button_click.play()
         // setTimeout(()=>{swooshSpin.play()},400)
         // setTimeout(()=>{swooshSpin.play()},800)
         // setTimeout(()=>{swooshSpin.play()},1200)
@@ -1462,11 +1463,16 @@ async function spin() {
           
 
         }
+        if (data.bonusCount == 1) {
+            const response = await fetch('api/bonusSpin')
+            const data = await response.json()
+            console.log(data)
 
+        }
 }
 
-   
-await spinOnLoad()
+    
+    await spinOnLoad()
 
 async function balance() {
     let response = await fetch('api/balance') // запрос к серверу

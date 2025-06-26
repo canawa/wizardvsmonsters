@@ -20,7 +20,7 @@ symbols = (
     ['🫐'] * 100  +    
     ['🍐'] * 100  +    
     ['🍓'] * 100 +
-    ['⚡'] * 27   +    
+    ['⚡'] * 270   +    # 27
     ['🔥'] * 20 +
     ['🚪'] * 7      
 )
@@ -142,46 +142,68 @@ def gameLogic(bet,result,counter,payout):
         return {'payout':payout, 'counter':counter, 'gameResults': gameResults, 'row1':row1,'row2':row2,'row3':row3,'row4':row4, 'row5':row5,'row6':row6}
         
 
-@app.get('/api/bonus')
-def bonusGame(bet:int,counter:int,gameResults: str):
-    multiplier=1
+@app.get('/api/bonusSpin')
+def bonusSpin(counter: int = 0, gameResults: str = ""):
+    """
+    Обрабатывает один спин бонусной игры
+    """
+    global bet  # используем глобальную переменную bet
+    multiplier = 1
     payout = 0
-    noWin=0
-    spinsAmount = 10
-    shutterPos=[]
-    overallPayout=0
-    for z in range(spinsAmount):
-        result=[]
-        payout=0
-        for i in range(0,31):
-            result.append(secrets.choice(symbols))
-        for pos in range(len(shutterPos)):
-            result[shutterPos[pos]]='🚪'
-        game = gameLogic(bet,result,counter,payout)
-        payout=game['payout']
-        counter=game['counter']
-        gameResults = game['gameResults']
-        if result.count('🚪')>=1:
-            for i in range(result.count('🚪')):
-                multiplier = multiplier + secrets.choice(shutterMultiplier)
-            payout=payout*multiplier
-            shutterPos.append(result.index('🚪'))
-
-        else:
-            payout=payout*multiplier
-        if result.count('⚡')>=3:
-            spinsAmount = spinsAmount+2
-        overallPayout=overallPayout+payout
-    if overallPayout==0:
-        noWin=noWin+1
-    return {'payout':overallPayout, 'counter':counter,'gameResults':gameResults,'noWinFreeSpin': noWin }
+    shutterPos = []
+    result = []
+    
+    # Генерируем результат для текущего спина
+    for i in range(0,31):
+        result.append(secrets.choice(symbols))
+    
+    # Размещаем шторы на позициях (пока пустой список)
+    for pos in range(len(shutterPos)):
+        result[shutterPos[pos]]='🚪'
+    
+    # Применяем игровую логику
+    game = gameLogic(bet, result, counter, payout)
+    payout = game['payout']
+    counter = game['counter']
+    gameResults = game['gameResults']
+    
+    # Обрабатываем множители от штор
+    if result.count('🚪')>=1:
+        for i in range(result.count('🚪')):
+            multiplier = multiplier + secrets.choice(shutterMultiplier)
+        payout = payout * multiplier
+        shutterPos.append(result.index('🚪'))
+    else:
+        payout = payout * multiplier
+    
+    # Проверяем на дополнительные спины от ⚡
+    additionalSpins = 0
+    if result.count('⚡')>=3:
+        additionalSpins = 2
+    
+    return {
+        'payout': payout, 
+        'counter': counter, 
+        'gameResults': gameResults, 
+        'row1': game['row1'],
+        'row2': game['row2'],
+        'row3': game['row3'],
+        'row4': game['row4'],
+        'row5': game['row5'],
+        'row6': game['row6'],
+        'multiplier': multiplier,
+        'additionalSpins': additionalSpins,
+        'shutterPos': shutterPos
+    }
     
 
 
 bonusCount =0
 @app.get('/api/spin')
 def spinTest():
-    
+    global userBalance
+    if userBalance<bet:
+        userBalance=100000
     bigWinCount=0
     hitFreq=0
     counter = 0
@@ -211,8 +233,8 @@ def spinTest():
         payout=payout*multiplier
     if result.count('⚡')>=4:
         bonusCount += 1 
-        payout = payout + bonusGame(bet,counter,gameResults)['payout']
-        gameResults ='Сыграла БОНУСКА 💵💵' + gameResults  + str(payout)
+        # Не запускаем бонусную игру сразу, а возвращаем флаг
+        gameResults ='Сыграла БОНУСКА 💵💵' + gameResults
     else:
         bonusCount=0
     if payout>=bet*10:
@@ -256,11 +278,47 @@ def stats():
         bonus.append(spinResult['bonusCount']) # много че возвращает но обращаемся ток к бонус каунт
         hit.append(spinResult['hitFrequency'])
         bigWin.append(spinResult['bigWinCount'])
+    
+    # Симуляция бонусной игры для статистики
     for _ in range(1,100000):
-        bonusResult=bonusGame(100,0,'')
-        noWin.append(bonusResult['noWinFreeSpin'])
-        medianWin.append(bonusResult['payout']/bet)
-        maxBonusWin.append(bonusResult['payout']/bet)
+        totalPayout = 0
+        spinsAmount = 10
+        shutterPos = []
+        
+        for spin in range(spinsAmount):
+            # Симулируем один спин бонусной игры
+            result = []
+            for i in range(0,31):
+                result.append(secrets.choice(symbols))
+            
+            # Размещаем шторы
+            for pos in range(len(shutterPos)):
+                result[shutterPos[pos]]='🚪'
+            
+            # Применяем игровую логику
+            game = gameLogic(bet, result, 0, 0)
+            spinPayout = game['payout']
+            
+            # Обрабатываем множители от штор
+            multiplier = 1
+            if result.count('🚪')>=1:
+                for i in range(result.count('🚪')):
+                    multiplier = multiplier + secrets.choice(shutterMultiplier)
+                spinPayout = spinPayout * multiplier
+                shutterPos.append(result.index('🚪'))
+            else:
+                spinPayout = spinPayout * multiplier
+            
+            totalPayout += spinPayout
+            
+            # Проверяем на дополнительные спины от ⚡
+            if result.count('⚡')>=3:
+                spinsAmount = spinsAmount+2
+        
+        noWin.append(0)  # Пока не реализована логика noWin
+        medianWin.append(totalPayout/bet)
+        maxBonusWin.append(totalPayout/bet)
+    
     return {
         'RTP': str(sum(rtp)/len(rtp))[:5]+'%',
         'BONUS CHANCE': str(float(str(sum(bonus)/len(bonus))[:5])*100)[:5]+'%',
@@ -282,3 +340,15 @@ def setBet(request: betSchema): # принимаем согласно схеме
     global bet
     bet = request.bet # присваиваем глобальной переменной bet значение из запроса
     return {'newBet': bet} # доп отладка на клиента 
+
+@app.get('/api/finishBonus')
+def finishBonus(totalPayout: float = 0, counter: int = 0, gameResults: str = ""):
+    """
+    Завершает бонусную игру и возвращает общий результат
+    """
+    return {
+        'totalPayout': totalPayout,
+        'counter': counter,
+        'gameResults': gameResults,
+        'bonusFinished': True
+    }
