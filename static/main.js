@@ -21,7 +21,7 @@ let extraTime
 const music = new Howl ({
    src : ['/static/sounds/music.wav'],
    loop : true,
-   volume : 0.04
+   volume : 0.01
 })
 const spinSound = new Howl ({
     src : ['/static/sounds/spinSound.mp3'],
@@ -52,7 +52,11 @@ const bonusDropped = new Howl ({
     src : ['/static/sounds/bonusDropped.mp3'],
     volume : 1
 })
-
+const bonusMusic = new Howl ({
+    src : ['/static/sounds/bonusMusic.mp3'],
+    volume : 0.5
+})
+let permission = true
 let sprite0
 let sprite1
 let sprite2
@@ -109,9 +113,19 @@ window.addEventListener('DOMContentLoaded', async () => {
              spin()
              music.play()
              spinButton.eventMode = 'none'
+             spinButton.alpha = 0.5
+             
+             if (permission == true) {
+                permission = false
+                setTimeout(()=>{
+                    spinButton.eventMode = 'static'
+                    spinButton.alpha = 1
+                    permission = true
+                },2500-extraTime)
+             }
          }
-        }
-     })
+            }
+        })
      
      
      
@@ -327,9 +341,9 @@ hamburger.on('pointerdown', () => {
     spinButton.eventMode = 'none' // потом разблокается когда выходишь из меню
     changeBet.eventMode = 'none' // потом разблокается когда выходишь из меню
     
-    if (music.volume() == 0.04) {
+    if (music.volume() == 0.01) {
         menuContainer.addChild(switchOn)
-    }
+    }   
     else {
         menuContainer.addChild(switchOff)
     }
@@ -353,7 +367,7 @@ hamburger.on('pointerdown', () => {
     switchOff.on('pointerdown', () => {
         menuContainer.removeChild(switchOff)
         menuContainer.addChild(switchOn)
-        music.volume(0.04)
+        music.volume(0.01)
     })
     
    
@@ -1473,7 +1487,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},500-extraTime)
                 }
                 setTimeout(()=>{spinAnimation(sprite24, app.screen.height / 10 + 4*sprite0.height, turboStatus)},300)
-                setTimeout(()=>{spinSound.play()},700)
+                setTimeout(()=>{spinSound.play()},700-extraTime)
             }
             if (data.row6[0] == symbol) {
                 sprite25 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1487,7 +1501,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},800-extraTime)
                 }
                 setTimeout(()=>{spinAnimation(sprite25, app.screen.height / 10 + 4*sprite0.height, turboStatus)},600)
-                setTimeout(()=>{spinSound.play()},1000)
+                setTimeout(()=>{spinSound.play()},1000-extraTime)
             }
             if (data.row6[1] == symbol) {
                 sprite26 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1501,7 +1515,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},1100-extraTime)
                 }
                 setTimeout(()=>{spinAnimation(sprite26, app.screen.height / 10 + 4*sprite0.height, turboStatus)},900)
-                setTimeout(()=>{spinSound.play()},1300)
+                setTimeout(()=>{spinSound.play()},1300-extraTime)
             }
             if (data.row6[2] == symbol) {
                 sprite27 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1515,7 +1529,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},1400-extraTime)
                 }
                 setTimeout(()=>{spinAnimation(sprite27, app.screen.height / 10 + 4*sprite0.height, turboStatus)},1200)
-                setTimeout(()=>{spinSound.play()},1600)
+                setTimeout(()=>{spinSound.play()},1600-extraTime)
             }
             if (data.row6[3] == symbol) {
                 sprite28 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1529,7 +1543,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},1700-extraTime)
                 }
                 setTimeout(()=>{spinAnimation(sprite28, app.screen.height / 10 + 4*sprite0.height, turboStatus)},1500)
-                setTimeout(()=>{spinSound.play()},1900)
+                setTimeout(()=>{spinSound.play()},1900-extraTime)
             }
             if (data.row6[4] == symbol) {
                 sprite29 = new PIXI.Sprite(PIXI.Assets.get(symbol))
@@ -1543,7 +1557,7 @@ async function spin() {
                     setTimeout(()=>{bonusSymbolDropped.play()},2000-extraTime)
                 }
                 setTimeout(()=>{spinAnimation(sprite29, app.screen.height / 10 + 4*sprite0.height, turboStatus)},1800)
-                setTimeout(()=>{spinSound.play()},2200)
+                setTimeout(()=>{spinSound.play()},2200-extraTime)
             }
           
 
@@ -1786,9 +1800,12 @@ async function spin() {
                     menuContainer.removeChild(youWonFreeSpins)
                 }, 1000)
                 
-
+                music.stop() // чтобы вкл music.play()
+                
+                bonusMusic.play()
             }),3500)
            
+            
            
             
             
