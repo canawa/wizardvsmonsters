@@ -25,6 +25,9 @@ symbols = (
     ['🚪'] * 7      
 )
 
+# Дополнительно, если звуки запрашиваются как /sounds/...
+app.mount("/sounds", StaticFiles(directory="static/sounds"), name="sounds")
+
 app.mount("/static", StaticFiles(directory="static", html=True), name="static") # при переходе на главную страничку откроется папка статик
 @app.get('/')
 def read_index():
