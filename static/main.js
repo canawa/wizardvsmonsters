@@ -709,7 +709,7 @@ async function spinAnimation(thisSprite,targetY) {
         
     }
     
-    app.ticker.add(fallAnimation)
+    app.ticker.add(fallAnimation) // вызываем анимацию где то 60 раз в секунду
     }
 
 
@@ -1029,12 +1029,12 @@ async function spinAnimation(thisSprite,targetY) {
 
 
 
-
-
 async function spin() {
     const symbolsArray = ['J','Q','K','A','🍓', '🍌','🍍','🔥','🫐','🍐','⚡','🚪']
         let response = await fetch('api/spin')
         let data = await response.json()
+
+
         gameConainter.removeChildren()
         button_click.play()
         // setTimeout(()=>{swooshSpin.play()},400)
