@@ -125,6 +125,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             {alias: 'onSwitch', src: '/static/img/onSwitch.png'},
             {alias: 'offSwitch', src: '/static/img/offSwitch.png'},
             {alias: 'changeBet', src: '/static/img/changeBet.png'},
+            {alias: 'youWonFreeSpins', src: '/static/img/youWonFreeSpins.png'},
 
 
 
@@ -151,6 +152,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const sfxOn = new PIXI.Sprite(PIXI.Assets.get('onSwitch'))
     const sfxOff = new PIXI.Sprite(PIXI.Assets.get('offSwitch'))
     const changeBet = new PIXI.Sprite(PIXI.Assets.get('changeBet'))
+    const youWonFreeSpins = new PIXI.Sprite(PIXI.Assets.get('youWonFreeSpins'))
     app.stage.addChild(backgroundContainer) // добавили новый контейнер на сцену
     backgroundContainer.addChildAt(background,0) // теперь пихаем в новый контейнер фон
 
@@ -1464,9 +1466,253 @@ async function spin() {
 
         }
         if (data.bonusCount == 1) {
-            const response = await fetch('api/bonusSpin')
-            const data = await response.json()
-            console.log(data)
+            spinButton.eventMode = 'none'
+            hamburger.eventMode = 'none'
+            changeBet.eventMode = 'none'
+            youWonFreeSpins.x = app.screen.width / 2
+            youWonFreeSpins.y = app.screen.height / 2.2
+            // youWonFreeSpins.width = app.screen.width / 1.8
+            youWonFreeSpins.alpha = 1
+            youWonFreeSpins.anchor.set(0.5)
+            youWonFreeSpins.eventMode = 'static'
+
+
+            setTimeout(() => {
+                menuContainer.addChild(youWonFreeSpins)
+                youWonFreeSpins.width = app.screen.width / 20
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2510)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 19.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2520)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 19
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2530)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 18.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2540)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 18
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2550)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 17.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2560)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 17
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2570)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 16.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2580)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 16
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2590)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 15.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2600)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 15
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2610)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 14.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2620)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 14
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2630)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 13.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2640)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 13
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2650)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 12.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2660)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 12
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2670)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 11.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2680)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 11
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2690)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 10.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2700)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 10
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2710)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 9.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2720)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 9
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2730)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 8.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2740)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 8
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2750)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 7.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2760)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 7
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2770)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 6.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2780)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 6
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2790)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 5.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2800)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2810)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 4.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2820)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 4
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2830)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 3.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2840)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 3
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2850)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 2.5
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2860)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 2
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2870)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 1.9
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2880)
+            setTimeout(() => {
+                youWonFreeSpins.width = app.screen.width / 1.8
+                youWonFreeSpins.scale.y = youWonFreeSpins.scale.x
+            }, 2890)
+            
+            setTimeout( youWonFreeSpins.on('pointerdown', () => {
+                
+                spinButton.eventMode = 'static'
+                hamburger.eventMode = 'static'
+                changeBet.eventMode = 'static'
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.95
+                }, 500)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.9
+                }, 100)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.85
+                }, 150)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.8
+                }, 200)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.75
+                }, 250)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.7
+                }, 300)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.65
+                }, 350)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.6
+                }, 400)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.55
+                }, 450)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.5
+                }, 500)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.45
+                }, 550)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.4
+                }, 600)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.35
+                }, 650)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.3
+                }, 700)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.25
+                }, 750)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.2
+                }, 800)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.15
+                }, 850)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.1
+                }, 900)
+                setTimeout(() => {
+                    youWonFreeSpins.alpha = 0.05
+                }, 950)
+                setTimeout(() => {
+                    menuContainer.removeChild(youWonFreeSpins)
+                }, 1000)
+                
+
+            }),3500)
+           
+           
+            
+            
+            for (let spinsAmount = 10; spinsAmount > 0; spinsAmount--) {
+                let response = await fetch('api/bonusSpin')
+                let data = await response.json()
+                console.log(data)
+                // spinsAmount = spinsAmount + data.additionalSpins  // потом раскомментировать !!!! 🔴
+            }
 
         }
 }
