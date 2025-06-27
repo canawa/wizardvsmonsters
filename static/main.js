@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             {alias: 'offSwitch', src: '/static/img/offSwitch.png'},
             {alias: 'changeBet', src: '/static/img/changeBet.png'},
             {alias: 'youWonFreeSpins', src: '/static/img/youWonFreeSpins.png'},
-
+            {alias: 'winTable', src: '/static/img/winTable.png'},
 
 
 
@@ -184,6 +184,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const sfxOff = new PIXI.Sprite(PIXI.Assets.get('offSwitch'))
     const changeBet = new PIXI.Sprite(PIXI.Assets.get('changeBet'))
     const youWonFreeSpins = new PIXI.Sprite(PIXI.Assets.get('youWonFreeSpins'))
+    
     app.stage.addChild(backgroundContainer) // добавили новый контейнер на сцену
     backgroundContainer.addChildAt(background,0) // теперь пихаем в новый контейнер фон
 
@@ -2239,20 +2240,280 @@ async function spin() {
             setTimeout(()=>{
                 bonusMusic.stop()
                 music.play()
-                const winTable= new PIXI.Graphics()
-                graphics.beginFill(0x000000)
-                graphics.drawRect(0,0,app.screen.width,app.screen.height)
-                graphics.endFill()
-                gameConainter.addChild(graphics)
-                const winText = new PIXI.Text(`Вы выиграли ${bonusSpinPayout}!`, {fontSize: 100, fill: 0x000000})
+                const winContainer = new PIXI.Container()
+                app.stage.addChild(winContainer)
+                const winTable = new PIXI.Sprite(PIXI.Assets.get('winTable'))
+                winTable.width = app.screen.width / 1.8
+                winTable.scale.y = winTable.scale.x
+                winTable.x = app.screen.width / 2
+                winTable.y = app.screen.height / 2.2
+                winTable.anchor.set(0.5)
+                winTable.eventMode = 'static'
+                winTable.alpha = 1
+                const winText = new PIXI.Text(`${bonusSpinPayout}₽!`, {
+                    fontSize: app.screen.width / 20, 
+                    fill: 0xffffff,
+                    fontWeight: 'bold',
+                    fontFamily: 'Arial',
+                    align: 'center',
+                    padding: 10,
+                })
+                
+                winText.x = app.screen.width / 1.97
+                winText.y = app.screen.height / 1.75
+                winText.anchor.set(0.5)
+                winText.eventMode = 'none'
+                winText.alpha = 1
+
+                setTimeout(() => {
+                    winContainer.addChild(winTable)
+                    winTable.width = app.screen.width / 20
+                    winTable.scale.y = winTable.scale.x
+                    winContainer.addChild(winText)     
+                    winTable.alpha = 1
+                    
+                }, 2510)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 19.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2520)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 19
+                    winTable.scale.y = winTable.scale.x
+                }, 2530)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 18.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2540)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 18
+                    winTable.scale.y = winTable.scale.x
+                }, 2550)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 17.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2560)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 17
+                    winTable.scale.y = winTable.scale.x
+                }, 2570)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 16.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2580)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 16
+                    winTable.scale.y = winTable.scale.x
+                }, 2590)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 15.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2600)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 15
+                    winTable.scale.y = winTable.scale.x
+                }, 2610)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 14.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2620)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 14
+                    winTable.scale.y = winTable.scale.x
+                }, 2630)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 13.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2640)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 13
+                    winTable.scale.y = winTable.scale.x
+                }, 2650)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 12.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2660)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 12
+                    winTable.scale.y = winTable.scale.x
+                }, 2670)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 11.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2680)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 11
+                    winTable.scale.y = winTable.scale.x
+                }, 2690)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 10.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2700)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 10
+                    winTable.scale.y = winTable.scale.x
+                }, 2710)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 9.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2720)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 9
+                    winTable.scale.y = winTable.scale.x
+                }, 2730)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 8.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2740)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 8
+                    winTable.scale.y = winTable.scale.x
+                }, 2750)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 7.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2760)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 7
+                    winTable.scale.y = winTable.scale.x
+                }, 2770)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 6.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2780)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 6
+                    winTable.scale.y = winTable.scale.x
+                }, 2790)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 5.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2800)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 5
+                    winTable.scale.y = winTable.scale.x
+                }, 2810)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 4.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2820)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 4
+                    winTable.scale.y = winTable.scale.x
+                }, 2830)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 3.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2840)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 3
+                    winTable.scale.y = winTable.scale.x
+                }, 2850)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 2.5
+                    winTable.scale.y = winTable.scale.x
+                }, 2860)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 2
+                    winTable.scale.y = winTable.scale.x
+                }, 2870)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 1.9
+                    winTable.scale.y = winTable.scale.x
+                }, 2880)
+                setTimeout(() => {
+                    winTable.width = app.screen.width / 1.8
+                    winTable.scale.y = winTable.scale.x
+                    winTable.eventMode = 'static'
+                }, 2890)
+                winTable.on('pointerdown', () => {
+                    setTimeout(() => {
+                        winTable.alpha = 0.95
+                        winText.alpha = 0.95
+                    }, 50)
+                    setTimeout(() => {
+                        winTable.alpha = 0.9
+                        winText.alpha = 0.9
+                    }, 100)
+                    setTimeout(() => {
+                        winTable.alpha = 0.85
+                        winText.alpha = 0.85
+                    }, 150)
+                    setTimeout(() => {
+                        winTable.alpha = 0.8
+                        winText.alpha = 0.8
+                    }, 200)
+                    setTimeout(() => {
+                        winTable.alpha = 0.75
+                        winText.alpha = 0.75
+                    }, 250)
+                    setTimeout(() => {
+                        winTable.alpha = 0.7
+                        winText.alpha = 0.7
+                    }, 300)
+                    setTimeout(() => {
+                        winTable.alpha = 0.65
+                        winText.alpha = 0.65
+                    }, 350)
+                    setTimeout(() => {
+                        winTable.alpha = 0.6
+                        winText.alpha = 0.6
+                    }, 400)
+                    setTimeout(() => {
+                        winTable.alpha = 0.55
+                        winText.alpha = 0.55
+                    }, 450)
+                    setTimeout(() => {
+                        winTable.alpha = 0.5
+                        winText.alpha = 0.5
+                    }, 500)
+                    setTimeout(() => {
+                        winTable.alpha = 0.45
+                        winText.alpha = 0.45
+                    }, 550)
+                    setTimeout(() => {
+                        winTable.alpha = 0.4
+                        winText.alpha = 0.4
+                    }, 600)
+                    setTimeout(() => {
+                        winTable.alpha = 0.35
+                        winText.alpha = 0.35
+                    }, 650)
+                    setTimeout(() => {
+                        winTable.alpha = 0.3
+                        winText.alpha = 0.3
+                    }, 700)
+                    setTimeout(() => {
+                        winTable.alpha = 0.25
+                        winText.alpha = 0.25
+                    }, 750)
+                    setTimeout(() => {
+                        winTable.alpha = 0.2
+                        winText.alpha = 0.2
+                    }, 800)
+                    setTimeout(() => {
+                        winTable.alpha = 0.15
+                        winText.alpha = 0.15
+                    }, 850)
+                    setTimeout(() => {
+                        winTable.alpha = 0.1
+                        winText.alpha = 0.1
+                    }, 900)
+                    setTimeout(() => {
+                        winTable.alpha = 0.05
+                        winText.alpha = 0.05
+                    }, 950)
+                    setTimeout(() => {
+                        winContainer.removeChild(winTable)
+                        winContainer.removeChild(winText)
+                    }, 1000)
+                })
             },36000)
+            
+            
+
             }),3500)
            
-            
-           
-            
-            
-            
 
         }
 }
