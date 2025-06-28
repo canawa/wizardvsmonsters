@@ -106,11 +106,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     })
     document.body.appendChild(app.canvas)
 
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', async (event) => {
         if (event.code == 'Space') {
          
          if (spinButton.eventMode == 'static') { 
-             spin()
+             await spin()
+             await balance()
              music.play()
              spinButton.eventMode = 'none'
              spinButton.alpha = 0.5
@@ -405,16 +406,19 @@ hamburger.on('pointerdown', () => {
         menuContainer.addChild(sfxOff)
         spinSound.volume(0)
         shutterSound.volume(0)
-        
+        bonusSymbolDropped.volume(0)
+        winSound.volume(0)
 
     })
     sfxOff.on('pointerdown', () => {
         menuContainer.removeChild(sfxOff)
         menuContainer.addChild(sfxOn)
         spinSound.volume(0.4)
+        bonusSymbolDropped.volume(0.4)
         shutterSound.volume(0.4)
         swooshSpin.volume(0.4)
         button_click.volume(1)
+        winSound.volume(0.4)
     })
     
     musicDescription.x = app.screen.width / 3.1
@@ -1569,12 +1573,12 @@ async function spin() {
             changeBet.eventMode = 'none'
             youWonFreeSpins.x = app.screen.width / 2
             youWonFreeSpins.y = app.screen.height / 2.2
-            // youWonFreeSpins.width = app.screen.width / 1.8
-            youWonFreeSpins.eventMode = 'none'
             youWonFreeSpins.alpha = 1
             youWonFreeSpins.anchor.set(0.5)
             youWonFreeSpins.eventMode = 'static'
-            
+            isSpinning = true
+            spinButton.alpha = 0.5
+            spinButton.cursor = 'not-allowed'
 
             setTimeout(() => {
                 menuContainer.addChild(youWonFreeSpins)
@@ -1803,13 +1807,17 @@ async function spin() {
                 
                 music.stop() // чтобы вкл music.play()
                 bonusMusic.play()
+                
+                // Блокируем кнопку спина на время бонусного раунда
+                isSpinning = true
+                spinButton.alpha = 0.5
+                spinButton.cursor = 'not-allowed'
+                
                 let time = 0
                 
                 for (let spinsAmount = 10; spinsAmount > 0; spinsAmount--) {
-                    
                     time = time + 3500
                     async function bonusRoundSpin() {
-                        const symbolsArray = ['J','Q','K','A','🍓', '🍌','🍍','🔥','🫐','🍐','⚡','🚪']
                         let response = await fetch('api/bonusSpin')
                         let data = await response.json()
                         bonusSpinPayout = bonusSpinPayout + data.payout
@@ -2230,16 +2238,20 @@ async function spin() {
     
             }
                     }
-                    setTimeout(()=>{
+                    setTimeout(async()=>{
                         bonusRoundSpin()
-                        
-
                     },time)
                     console.log(bonusSpinPayout)
                 }
             setTimeout(()=>{
                 bonusMusic.stop()
                 music.play()
+                
+                // Обновляем баланс после завершения бонусного раунда
+                setTimeout(async () => {
+                    await balance()
+                }, 2500)
+                
                 const winContainer = new PIXI.Container()
                 app.stage.addChild(winContainer)
                 const winTable = new PIXI.Sprite(PIXI.Assets.get('winTable'))
@@ -2250,6 +2262,7 @@ async function spin() {
                 winTable.anchor.set(0.5)
                 winTable.eventMode = 'static'
                 winTable.alpha = 1
+                
                 const winText = new PIXI.Text(`${bonusSpinPayout}₽!`, {
                     fontSize: app.screen.width / 20, 
                     fill: 0xffffff,
@@ -2258,7 +2271,17 @@ async function spin() {
                     align: 'center',
                     padding: 10,
                 })
-                
+
+                async function bonusSpinPayoutInfo() {const responsePOST = await fetch('api/bonusSpinPayout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ bonusSpinPayout: bonusSpinPayout })
+                })
+                }
+                bonusSpinPayoutInfo()
+
                 winText.x = app.screen.width / 1.97
                 winText.y = app.screen.height / 1.75
                 winText.anchor.set(0.5)
@@ -2506,6 +2529,12 @@ async function spin() {
                     setTimeout(() => {
                         winContainer.removeChild(winTable)
                         winContainer.removeChild(winText)
+                        
+                        // Разблокируем кнопку спина после завершения бонусного раунда
+                        isSpinning = false
+                        spinButton.alpha = 1.0
+                        spinButton.cursor = 'pointer'
+                        console.log('Бонусный раунд завершен, кнопка спина разблокирована!')
                     }, 1000)
                 })
             },36000)

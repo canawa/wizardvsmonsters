@@ -6,10 +6,24 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import FileResponse
 import math
+
 app = FastAPI()
 payout=0
 bet = 1000
 result=0
+bonusSymbols = (
+    ['J'] * 100 +    # символы
+    ['Q'] * 100 +    # символы
+    ['K'] * 100 +     
+    ['A'] * 100 +    
+    ['🍌'] * 100  +
+    ['🍍'] * 100 +
+    ['🫐'] * 100  +    
+    ['🍐'] * 100  +    
+    ['🍓'] * 100 +    
+    ['🔥'] * 20 +
+    ['🚪'] * 12      
+)
 symbols = (
     ['J'] * 100 +    # символы
     ['Q'] * 100 +    # символы
@@ -148,14 +162,19 @@ def bonusSpin(counter: int = 0, gameResults: str = ""):
     Обрабатывает один спин бонусной игры
     """
     global bet  # используем глобальную переменную bet
+    global shutterPos  # делаем shutterPos глобальной переменной
     multiplier = 1
     payout = 0
-    shutterPos = []
+    
+    # Инициализируем shutterPos только если она еще не существует
+    if 'shutterPos' not in globals():
+        shutterPos = []
+    
     result = []
     
     # Генерируем результат для текущего спина
     for i in range(0,31):
-        result.append(secrets.choice(symbols))
+        result.append(secrets.choice(bonusSymbols))
     
     # Размещаем шторы на позициях (пока пустой список)
     for pos in range(len(shutterPos)):
@@ -201,6 +220,8 @@ def bonusSpin(counter: int = 0, gameResults: str = ""):
 bonusCount =0
 @app.get('/api/spin')
 def spinTest():
+    global bonusSpinPayout
+    bonusSpinPayout=0
     global userBalance
     if userBalance<bet:
         userBalance=100000
@@ -233,6 +254,9 @@ def spinTest():
         payout=payout*multiplier
     if result.count('⚡')>=4:
         bonusCount += 1 
+        # Сбрасываем позиции штор при начале нового бонусного раунда
+        global shutterPos
+        shutterPos = []
         # Не запускаем бонусную игру сразу, а возвращаем флаг
         gameResults ='Сыграла БОНУСКА 💵💵' + gameResults
     else:
@@ -255,8 +279,9 @@ def getBalanceOnOpen():
 def balance():
     global userBalance
     global payout
+    global bonusSpinPayout
     beforeEndOfTheSpin = userBalance - bet
-    userBalance = userBalance - bet + payout
+    userBalance = userBalance - bet + payout + bonusSpinPayout
     print(type(payout))
     return {'balance': userBalance, 'beforeEndOfTheSpin': beforeEndOfTheSpin, 'payout': math.floor(payout)}
 
@@ -341,14 +366,11 @@ def setBet(request: betSchema): # принимаем согласно схеме
     bet = request.bet # присваиваем глобальной переменной bet значение из запроса
     return {'newBet': bet} # доп отладка на клиента 
 
-@app.get('/api/finishBonus')
-def finishBonus(totalPayout: float = 0, counter: int = 0, gameResults: str = ""):
-    """
-    Завершает бонусную игру и возвращает общий результат
-    """
-    return {
-        'totalPayout': totalPayout,
-        'counter': counter,
-        'gameResults': gameResults,
-        'bonusFinished': True
-    }
+class bonusSpinPayoutSchema(BaseModel):
+    bonusSpinPayout: float = Field(ge=0)
+
+@app.post('/api/bonusSpinPayout')
+def bonusSpinPayout(request: bonusSpinPayoutSchema):
+    global bonusSpinPayout
+    bonusSpinPayout = request.bonusSpinPayout
+    balance()
