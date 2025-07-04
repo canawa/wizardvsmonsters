@@ -1564,7 +1564,7 @@ async function spin() {
                 setTimeout(()=>{spinAnimation(sprite29, app.screen.height / 10 + 4*sprite0.height, turboStatus)},1800)
                 setTimeout(()=>{spinSound.play()},2200-extraTime)
             }
-          
+          youWonFreeSpins.eventMode = 'static'
 
         }
         if (data.bonusCount == 1) {
@@ -1575,7 +1575,7 @@ async function spin() {
             youWonFreeSpins.y = app.screen.height / 2.2
             youWonFreeSpins.alpha = 1
             youWonFreeSpins.anchor.set(0.5)
-            youWonFreeSpins.eventMode = 'static'
+            
             isSpinning = true
             spinButton.alpha = 0.5
             spinButton.cursor = 'not-allowed'
