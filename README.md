@@ -34,3 +34,5 @@ Version 1.02 is stable and includes all core gameplay features. Further improvem
 
 🎯 Goal
 This project demonstrates how to build a playable slot with real math behind it — not just spinning reels, but actual backend-validated results. It's meant to be a base for future games, prototypes, or even real integrations (with proper licensing).
+
+![image](https://github.com/user-attachments/assets/c1394cb8-a540-4f83-9ac7-defdc204c452)
