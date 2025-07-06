@@ -35,4 +35,12 @@ Version 1.02 is stable and includes all core gameplay features. Further improvem
 🎯 Goal
 This project demonstrates how to build a playable slot with real math behind it — not just spinning reels, but actual backend-validated results. It's meant to be a base for future games, prototypes, or even real integrations (with proper licensing).
 
+Basic Spins:
 ![image](https://github.com/user-attachments/assets/c1394cb8-a540-4f83-9ac7-defdc204c452)
+
+Bonus Game:
+![image](https://github.com/user-attachments/assets/8e3e3aa6-1525-4d3b-8282-3536131fbf26)
+
+Bonus Game Payouts:
+![image](https://github.com/user-attachments/assets/310584f7-cb93-4f93-be94-a96a3b7eadc7)
+
